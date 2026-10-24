@@ -1,0 +1,7 @@
+group,score_state,n,median_minute,ci95_low,ci95_high
+Arsenal,winning,18,71.6,67.4,74.8
+Arsenal,drawing,12,58.3,22.6,69.1
+Arsenal,losing,8,59.1,45.0,63.2
+Rest of league,winning,217,66.1,64.4,68.1
+Rest of league,drawing,258,61.8,59.8,63.4
+Rest of league,losing,245,57.5,55.0,59.4

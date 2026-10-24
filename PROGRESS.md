@@ -30,7 +30,28 @@
 - Arsenal: 107 subs in 38 matches; first sub score state: winning 18, drawing 13, losing 7.
   Caution: these counts mainly reflect how often Arsenal were ahead, not a manager preference.
 
+## 2026-10-24 - Phase 1: first tactical substitution timing by score state
+
+**Done**
+- `fti/first_sub.py`: first Tactical sub per team-match (injury changes skipped, flagged), median minute
+  with 95% percentile-bootstrap CI (10,000 resamples, seed 42) -> results/first_sub_timing_by_state.csv.
+- Tests: 6 passed (3 new: injury skipping, bootstrap reproducibility, zero-width edge case).
+- Coverage: 758 of 760 team-matches had a tactical sub (Arsenal 38/38); 65 preceded by an injury change (Arsenal 2).
+
+**Result (descriptive, 2015/16)** - median first tactical sub minute (95% CI):
+| State | Arsenal | Rest of league |
+|---|---|---|
+| Winning | 71.6 (67.4-74.8), n=18 | 66.1 (64.4-68.1), n=217 |
+| Drawing | 58.3 (22.6-69.1), n=12 | 61.8 (59.8-63.4), n=258 |
+| Losing | 59.1 (45.0-63.2), n=8 | 57.5 (55.0-59.4), n=245 |
+
+- Winning: CIs do not overlap -> candidate finding (Arsenal ~5-6 min later). Not yet tested formally; no controls.
+- Drawing / losing: too uncertain to distinguish from the league.
+- Caveat: score state and timing are entangled (all matches start drawing); within-state comparison
+  partly controls this. Survival/time-to-event model is a later, more rigorous option.
+
 ## Next steps (Phase 1)
-1. First-substitution timing by score state (Tactical only), Arsenal vs league, with uncertainty intervals.
-2. Data-quality checks: red cards, missing positions, simultaneous changes.
-3. First charts and a short Arsenal findings section in the README.
+1. Bootstrap CI for the *difference* (Arsenal - league) per score state.
+2. Inspect the very early Arsenal "drawing" first sub (~22') - genuine tactical change or data issue?
+3. Sensitivity: exclude team-matches with an earlier injury change; check margin (winning by 1 vs 2+), red cards.
+4. First charts and a short Arsenal findings section in the README.
