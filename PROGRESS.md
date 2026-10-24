@@ -17,8 +17,20 @@
 - Minute convention: elapsed clock vs. report minute (+1).
 - Goals and substitutions can be seconds apart, so ordering matters for "score at substitution".
 
+## 2026-10-24 - Phase 1: ingestion and score state
+
+**Done**
+- `fti/ingest.py`: cached download of all 380 matches (data/cache, ~1.2 GB, git-ignored; resumable).
+- `fti/substitutions.py`: score at every substitution via StatsBomb event `index` ordering -> data/processed/substitutions.csv.
+- Data-quality check: goals found reproduce all 380 official final scores (0 mismatches).
+- Tests: synthetic unit test + integration test on verified West Ham match (3 passed).
+
+**Findings so far (descriptive only)**
+- 2,109 substitutions (2,001 Tactical, 108 Injury), ~2.8 per team per match.
+- Arsenal: 107 subs in 38 matches; first sub score state: winning 18, drawing 13, losing 7.
+  Caution: these counts mainly reflect how often Arsenal were ahead, not a manager preference.
+
 ## Next steps (Phase 1)
-1. Ingestion module: download and cache all 380 matches' substitutions and goals locally (not committed).
-2. Compute score state at each substitution; unit-test it on the verified West Ham match.
-3. Data-quality checks: missing fields, injury vs tactical counts, red cards.
-4. First descriptive summaries and charts for Arsenal vs league.
+1. First-substitution timing by score state (Tactical only), Arsenal vs league, with uncertainty intervals.
+2. Data-quality checks: red cards, missing positions, simultaneous changes.
+3. First charts and a short Arsenal findings section in the README.
