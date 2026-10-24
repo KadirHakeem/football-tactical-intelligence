@@ -1,0 +1,4 @@
+# Pinned direct dependencies (Python 3.12). pandas and numpy come with statsbombpy.
+statsbombpy==1.22.0
+pandas==3.1.0
+numpy==2.5.4

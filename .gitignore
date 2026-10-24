@@ -1,0 +1,18 @@
+# Python virtual environment and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets (API keys etc.) - never commit
+.env
+
+# Downloaded / cached data: StatsBomb raw data is loaded at runtime, not redistributed
+data/raw/
+data/cache/
+*.sqlite
+*.sqlite-journal
+
+# Editor / OS clutter
+.vscode/
+.DS_Store
+Thumbs.db
