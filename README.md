@@ -2,7 +2,7 @@
 
 Identifying, quantifying and comparing football managers' **observable** tactical decisions, starting with substitutions, using public event data, transparent statistics and (later) carefully validated machine learning.
 
-> **Status:** Phase 2 analyses complete: any-team pipeline, league-wide comparisons, five pre-registered analyses and a survival model (Phase 1 released as v0.1.0). See [PROGRESS.md](PROGRESS.md).
+> **Status:** Phase 2 complete (v0.2.0): any-team pipeline, league-wide comparisons, five pre-registered analyses and a survival model, run for every team. See [PROGRESS.md](PROGRESS.md).
 
 ## Motivation
 
@@ -51,6 +51,8 @@ Scope and principles:
 ![Sensitivity of the winning-state gap](results/arsenal/figures/gap_sensitivity.png)
 
 **Controlled model (Phase 2).** A pre-registered minute-by-minute survival model, which updates the score every minute and controls for match minute, half-time, home/away, team strength and opponent strength, gives an odds ratio of **0.66 (95% CI 0.46-0.95, p = 0.026)** for Arsenal vs the league while winning: about one-third lower odds of a first change in any given minute. The finding is supported after controls (see [Survival model](#survival-model-with-controls)).
+
+**League-wide context.** When the same survival model is run for all 20 teams with Benjamini-Hochberg correction, the winning-state result is *not* distinctive (adjusted p = 0.35): it holds for Arsenal as a pre-chosen case study, not as a league-wide standout. The only team-situation that does stand out league-wide is **Arsenal while drawing** (odds ratio 0.48, adjusted p = 0.043) - first noticed in exploratory analysis, just under the threshold, and from one season, so it is a notable pattern that needs replication.
 
 **Interpretation.** Supported, not proven: one season, 31 qualifying Arsenal matches, an upper interval bound close to 1. Consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
 
@@ -216,6 +218,23 @@ minute (10,730 minute rows, 646 team-matches, 607 first changes; standard errors
 
 ![Survival model odds ratios](results/arsenal/figures/survival_odds_ratios.png)
 
+**Survival model for all teams.** The same model fitted once per team (54 of 60 team-states with at least
+8 matches; all fits converged), Benjamini-Hochberg across all of them (`python -m fti --skip-ingest --league`):
+
+| Team-situation | Odds ratio (95% CI) | p | Adjusted p |
+|---|---|---|---|
+| **Arsenal while drawing** | **0.48 (0.32-0.74)** | 0.0008 | **0.043** (only survivor) |
+| Southampton while winning | 1.89 (1.19-3.00) | 0.007 | 0.17 |
+| Manchester City while winning | 2.09 (1.20-3.66) | 0.010 | 0.17 |
+| Arsenal while winning | 0.66 (0.46-0.95) | 0.026 | 0.35 |
+
+- **Agreement across methods matters.** Crystal Palace's half-time habit was the standout in the median-based
+  scan but does not appear among the smallest p-values here, because the survival model already accounts for
+  the league-wide half-time spike and measures per-minute risk rather than the minute of the change.
+  Arsenal's "waits longer" pattern appears under both methods; Palace's result is method-specific.
+
+![Survival model for all teams](results/league/figures/survival_all_teams.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -299,6 +318,6 @@ football-tactical-intelligence/
 
 0. Feasibility & setup (done)
 1. Reproducible Arsenal substitution analytics (done, v0.1.0)
-2. Manager comparisons across the league; careful modelling only where justified (analyses done; survival model added)
+2. Manager comparisons across the league; careful modelling only where justified (done, v0.2.0)
 3. Automated short analysis videos from the same pipeline
 4. Portfolio polish

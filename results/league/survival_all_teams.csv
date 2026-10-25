@@ -1,0 +1,61 @@
+team,score_state,n_matches_in_state,tested,estimable,odds_ratio,ci95_low,ci95_high,p_value,bh_adjusted_p,fdr_significant
+AFC Bournemouth,winning,10,True,True,1.388,0.68,2.834,0.3683,0.689,False
+AFC Bournemouth,drawing,11,True,True,0.935,0.317,2.764,0.9037,0.9686,False
+AFC Bournemouth,losing,17,True,True,1.072,0.605,1.9,0.8115,0.9679,False
+Arsenal,winning,18,True,True,0.659,0.457,0.95,0.0256,0.3456,False
+Arsenal,drawing,13,True,True,0.484,0.316,0.74,0.0008,0.0432,True
+Arsenal,losing,6,False,True,,,,,,False
+Aston Villa,winning,7,False,True,,,,,,False
+Aston Villa,drawing,15,True,True,0.907,0.385,2.132,0.8222,0.9679,False
+Aston Villa,losing,21,True,True,1.009,0.561,1.815,0.9769,0.9858,False
+Chelsea,winning,10,True,True,0.924,0.449,1.902,0.8309,0.9679,False
+Chelsea,drawing,16,True,True,1.189,0.494,2.861,0.6986,0.9201,False
+Chelsea,losing,9,True,True,1.197,0.496,2.892,0.6888,0.9201,False
+Crystal Palace,winning,9,True,True,1.191,0.613,2.315,0.6065,0.9061,False
+Crystal Palace,drawing,23,True,True,1.481,0.771,2.845,0.2384,0.6509,False
+Crystal Palace,losing,11,True,True,1.472,0.648,3.342,0.356,0.689,False
+Everton,winning,8,True,True,0.671,0.415,1.084,0.103,0.5459,False
+Everton,drawing,15,True,True,1.431,0.983,2.083,0.0611,0.4124,False
+Everton,losing,11,True,True,1.006,0.498,2.035,0.9858,0.9858,False
+Leicester City,winning,20,True,True,0.81,0.508,1.291,0.3756,0.689,False
+Leicester City,drawing,17,True,True,0.784,0.46,1.336,0.371,0.689,False
+Leicester City,losing,7,False,True,,,,,,False
+Liverpool,winning,14,True,True,0.952,0.284,3.186,0.9361,0.9721,False
+Liverpool,drawing,19,True,True,0.777,0.502,1.201,0.2557,0.6509,False
+Liverpool,losing,9,True,True,0.654,0.312,1.374,0.2623,0.6509,False
+Manchester City,winning,14,True,True,2.092,1.197,3.656,0.0096,0.1728,False
+Manchester City,drawing,17,True,True,1.16,0.66,2.04,0.6058,0.9061,False
+Manchester City,losing,11,True,True,1.626,0.871,3.038,0.1272,0.5682,False
+Manchester United,winning,14,True,True,1.326,0.791,2.223,0.2836,0.6509,False
+Manchester United,drawing,16,True,True,1.483,0.879,2.5,0.1395,0.5682,False
+Manchester United,losing,5,False,True,,,,,,False
+Newcastle United,winning,9,True,True,1.436,0.538,3.828,0.4698,0.7928,False
+Newcastle United,drawing,13,True,True,0.443,0.199,0.988,0.0465,0.4124,False
+Newcastle United,losing,13,True,True,1.319,0.687,2.532,0.4061,0.7074,False
+Norwich City,winning,9,True,True,0.871,0.501,1.514,0.6246,0.9061,False
+Norwich City,drawing,15,True,True,0.78,0.492,1.236,0.2893,0.6509,False
+Norwich City,losing,14,True,True,0.679,0.353,1.307,0.2464,0.6509,False
+Southampton,winning,15,True,True,1.889,1.191,2.995,0.0069,0.1728,False
+Southampton,drawing,12,True,True,1.068,0.557,2.051,0.8424,0.9679,False
+Southampton,losing,7,False,True,,,,,,False
+Stoke City,winning,14,True,True,1.34,0.757,2.37,0.3148,0.68,False
+Stoke City,drawing,14,True,True,1.376,0.787,2.405,0.263,0.6509,False
+Stoke City,losing,10,True,True,0.603,0.304,1.195,0.1473,0.5682,False
+Sunderland,winning,6,False,True,,,,,,False
+Sunderland,drawing,14,True,True,1.04,0.522,2.073,0.911,0.9686,False
+Sunderland,losing,12,True,True,2.067,0.987,4.331,0.0543,0.4124,False
+Swansea City,winning,10,True,True,0.971,0.571,1.652,0.9148,0.9686,False
+Swansea City,drawing,21,True,True,1.324,0.86,2.038,0.2023,0.6509,False
+Swansea City,losing,14,True,True,0.833,0.373,1.863,0.6567,0.9093,False
+Tottenham Hotspur,winning,18,True,True,0.708,0.499,1.003,0.0523,0.4124,False
+Tottenham Hotspur,drawing,16,True,True,0.873,0.553,1.378,0.5599,0.8893,False
+Tottenham Hotspur,losing,8,True,True,0.851,0.436,1.664,0.6376,0.9061,False
+Watford,winning,12,True,True,0.969,0.677,1.387,0.8648,0.9686,False
+Watford,drawing,21,True,True,1.402,0.819,2.402,0.2181,0.6509,False
+Watford,losing,13,True,True,1.118,0.548,2.28,0.7586,0.9527,False
+West Bromwich Albion,winning,9,True,True,0.69,0.3,1.587,0.3828,0.689,False
+West Bromwich Albion,drawing,15,True,True,0.56,0.298,1.052,0.0715,0.429,False
+West Bromwich Albion,losing,14,True,True,0.678,0.335,1.37,0.2786,0.6509,False
+West Ham United,winning,12,True,True,1.69,0.886,3.225,0.1112,0.5459,False
+West Ham United,drawing,10,True,True,1.34,0.504,3.561,0.5578,0.8893,False
+West Ham United,losing,11,True,True,1.145,0.53,2.472,0.7311,0.94,False

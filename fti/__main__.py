@@ -17,7 +17,7 @@ import argparse
 import time
 
 from fti import (charts, first_sub, halftime, halves, ingest, league, pressing, robustness,
-                 rotation, substitutions, survival, windows)
+                 rotation, substitutions, survival, survival_league, windows)
 from fti.teams import DEFAULT_TEAM, list_teams, resolve_team, team_results_dir
 
 
@@ -59,7 +59,8 @@ def main() -> None:
                  ("windows: double/triple changes, all teams vs league, FDR-corrected", windows.main),
                  ("halves: second-half share of xG, all teams vs league, FDR-corrected", halves.main),
                  ("pressing: pressing height after taking the lead, FDR-corrected", pressing.main),
-                 ("rotation: share of minutes to the 11 most-used players (descriptive)", rotation.main)]
+                 ("rotation: share of minutes to the 11 most-used players (descriptive)", rotation.main),
+                 ("survival_league: survival model for every team, FDR-corrected", survival_league.main)]
     if not args.skip_ingest:
         steps.insert(0, ("ingest: download/cache match data", lambda: ingest.main([])))
 

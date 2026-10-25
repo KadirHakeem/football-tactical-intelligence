@@ -232,7 +232,29 @@ StatsBomb logo deferred to Phase 4 (needs manual download from their media pack)
 
 **All pre-registered analyses (A-E) are complete.**
 
-## Next steps (Phase 2 - wrap-up)
+## 2026-10-25 - Phase 2 wrap-up: survival model for all teams; Phase 2 complete (tag v0.2.0)
+
+**Done** - `fti/survival_league.py` (+2 tests, 62 total); in `python -m fti --league`.
+- 20 fits, 54 of 60 team-states tested (min 8 matches in state), all converged; BH (FDR 5%).
+- Only survivor: Arsenal while drawing OR 0.48 (0.32-0.74), p = 0.0008, adjusted 0.043.
+  Caveats: first noticed in exploratory Step E output; adjusted p just under 0.05; one season -> needs replication.
+- Arsenal while winning: adjusted 0.35 - supported as pre-chosen case study, not a league-wide standout.
+- Southampton (OR 1.89) and Man City (OR 2.09) changed sooner while winning; not significant after correction.
+- Crystal Palace (median-scan standout) absent from the top here: method-specific. Lesson: trust findings that
+  agree across methods.
+- User chose to skip the Arsenal double-change spot-check.
+
+**Phase 2 complete.**
+
+## Next steps (Phase 3 - not started)
+1. Automated short vertical videos (9:16) from verified results, single Python pipeline: finding -> script ->
+   animated chart -> subtitles -> optional narration -> MP4. Choose the simplest robust libraries.
+2. Candidate first videos: league half-time pattern; teams press deeper after scoring; Arsenal waits longer.
+3. Phase 4 items carried over: StatsBomb logo attribution; README polish; X post.
+4. Optional analysis follow-ups (exploratory): per-minute xG/pressing rates; score-effect check for pressing;
+   formal test of the half-time trend; replication idea - Arsenal 2003/04 data (Arsenal only, no league benchmark).
+
+## Earlier plan (Phase 2, all done)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
