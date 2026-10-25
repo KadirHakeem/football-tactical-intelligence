@@ -73,8 +73,23 @@
 - Losing: no evidence of difference in any variant.
 - Caution: 12 comparisons (4 variants x 3 states) - some "significant" results expected by chance.
 
+## 2026-10-24 - Phase 1: robustness checks (variant D as main definition)
+
+**Done** - `fti/robustness.py` + 3 tests (13 total).
+- Margin: when winning, Arsenal were ahead by 2+ more often (53% vs 42%), and league teams sub later
+  with bigger leads (67.9 vs 64.2). But within each lead size Arsenal were still later:
+  +7.1 min (1 goal, n=8, CI -1.8 to 12.2) and +6.2 min (2+, n=9, CI -2.1 to 13.4).
+  -> margin does not explain the gap; each subgroup is too small for its own CI to exclude zero.
+- Permutation test (10,000 shuffles): winning p = 0.010, drawing p = 0.22, losing p = 0.83.
+  Winning still below 0.05/3 = 0.017 (Bonferroni for 3 states); drawing "finding" from variant D not supported.
+
+**Current best statement**
+> In 2015/16, when Arsenal were winning, their first tactical substitution came about 6-8 minutes later
+> than other Premier League teams' in the same situation (median 71-74' vs 64-68'). The pattern holds after
+> removing red-card cases and suspected mislabelled injuries, and within both 1-goal and 2+-goal leads
+> (permutation p = 0.01). Single season, 17 Arsenal matches: suggestive, not conclusive. No claim about intent.
+
 ## Next steps (Phase 1)
-1. Winning margin check (ahead by 1 vs 2+): is Arsenal's later timing explained by how far ahead they were?
-2. A rank-based check (permutation or Mann-Whitney) to complement the bootstrap for small n.
-3. First charts (distribution of first-sub minute, Arsenal vs league, by state).
-4. Arsenal findings + limitations section in the README.
+1. First charts (distribution of first-sub minute, Arsenal vs league, by state) -> results/figures/.
+2. Arsenal findings + limitations section in the README.
+3. Phase 1 wrap-up: one-command pipeline, final commit/tag.
