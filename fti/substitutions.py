@@ -124,7 +124,8 @@ def build_substitutions_table() -> tuple[pd.DataFrame, list[str]]:
     return table, mismatches
 
 
-def table_is_current(out: Path | None = None, sources: list[Path] | None = None) -> bool:
+def table_is_current(out: Path | None = None, sources: list[Path] | None = None,
+                     columns: list[str] | None = None) -> bool:
     """True if substitutions.csv exists, has the current columns, and is newer than its inputs.
 
     Inputs = this module's code + the cached match data. If any of them changed after the table
@@ -134,7 +135,7 @@ def table_is_current(out: Path | None = None, sources: list[Path] | None = None)
     if not out.exists():
         return False
     with open(out, encoding="utf-8") as f:
-        if not set(COLUMNS) <= set(f.readline().strip().split(",")):
+        if not set(columns or COLUMNS) <= set(f.readline().strip().split(",")):
             return False
     if sources is None:
         sources = [Path(__file__), CACHE_DIR / "matches.pkl", *EVENTS_DIR.glob("*.pkl")]
