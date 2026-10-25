@@ -52,6 +52,24 @@ Scope and principles:
 
 **Interpretation.** Suggestive, not conclusive. This is an observed pattern in one season, consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
 
+## League-wide comparison (all 20 teams)
+
+The same measure for every team, compared with the rest of the league in each score state
+(`python -m fti --skip-ingest --league`). Up to 60 questions are asked at once, so p-values are
+corrected with **Benjamini-Hochberg** (false discovery rate 5%). Team-situations with fewer than
+**8 matches** are not tested; this minimum was fixed before the results were seen.
+
+![League-wide comparison](results/league/figures/league_overview.png)
+
+- **42 of 60** team-situations had enough matches to test (weaker teams were rarely winning,
+  stronger teams rarely losing).
+- **One result survives correction: Crystal Palace when drawing** (p = 0.0006, adjusted p = 0.025;
+  also passes Bonferroni). Inspecting the matches shows *why*: Palace made their first tactical change
+  **at half-time in 10 of 18** drawn situations, spread across the whole season.
+- **Arsenal's winning-state result ranks 2nd of 42 but does not survive** league-wide correction
+  (adjusted p = 0.21). It remains a pre-chosen case study, not a league-wide standout.
+- "Team" is not the same as "manager": six clubs changed manager during 2015/16.
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -67,6 +85,7 @@ Scope and principles:
 - **Timing and score state are entangled.** Every match starts level, so early changes are mostly made while drawing. Comparing within the same score state reduces, but does not remove, this. A survival (time-to-event) model is a planned improvement.
 - **Uncontrolled confounders.** Opponent strength, home/away, fixture congestion and squad availability are not yet adjusted for. Winning margin was checked and does not explain the gap.
 - **Multiple comparisons.** Three score states and four cleaning variants were examined. The winning-state gap appeared in the first, uncleaned analysis and is reported because it held in every variant; isolated hits (e.g. drawing under variant D, n = 6) are treated as noise.
+- **Half-time injuries are invisible.** StatsBomb records half-time changes at the start of the second half, so a player injured in the first half and replaced at the interval looks like a tactical half-time change. The first-half suspected-injury rule cannot catch these.
 - **Focus team chosen in advance.** Arsenal was selected as the case study before any analysis, which is why a per-team correction (0.05 / 3 score states) is used for its result. Scanning all 20 teams for standouts is a different question that requires a stricter league-wide correction (planned for Phase 2); under that correction, a p-value like Arsenal's 0.010 would not stand out on its own.
 - **Benchmark mix.** "Rest of league" pools 19 other clubs and their managers (including mid-season managerial changes).
 
@@ -99,6 +118,9 @@ python -m pytest -v           # run tests
 # Any other team (results go to results/<team>/, e.g. results/leicester-city/)
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
+
+# All 20 teams compared (results/league/)
+python -m fti --skip-ingest --league
 
 # ...or step by step
 python -m fti.ingest          # download + cache all 380 matches (one-off, ~1.2 GB local)

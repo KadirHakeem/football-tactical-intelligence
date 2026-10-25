@@ -128,9 +128,26 @@
   (+5.8, CI +1.9 to +11.0, n = 8) - post-hoc subgroup, hypothesis only.
 - Data quirk: some names contain doubled apostrophes (e.g. "N''Golo Kanté"); use lineup display names later.
 
+## 2026-10-25 - Phase 2 step 2: league-wide comparison
+
+**Done** - `fti/league.py` (+7 tests, 36 total); `python -m fti --league`.
+- All 20 teams x 3 score states, variant D; min 8 matches per team-state (pre-specified); 42 of 60 tested.
+- Benjamini-Hochberg (FDR 5%) implemented by hand, Bonferroni alongside.
+- Skips: weaker teams rarely winning, stronger teams rarely losing (my prediction of mostly losing-state
+  skips was wrong - generalised from top clubs).
+
+**Results**
+- Crystal Palace, drawing: -18.2 min, p = 0.0006, BH-adjusted 0.025 (also Bonferroni). Only survivor.
+  Inspection: first tactical change at half-time in 10 of 18 drawn situations, Aug-Apr (a habit, not a
+  late-season shift); mostly attacking changes, some like-for-like (possible half-time injuries).
+- Arsenal, winning: 2nd smallest p (0.010) but BH-adjusted 0.21 - not a league-wide standout, as the
+  README stated before the run.
+- New limitation: half-time injury replacements look like tactical half-time changes (recorded in period 2).
+- Better framing for Palace: a proportion ("10 of 18 at half-time") rather than "18 minutes earlier".
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
-2. League-wide manager comparison: all 20 teams, handling multiple comparisons properly.
+2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
    - final-30-minute substitutions and simultaneous (double/triple) changes
    - first vs second half intensity (shots, xG, pressing)

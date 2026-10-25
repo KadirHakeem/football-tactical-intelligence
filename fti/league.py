@@ -105,8 +105,9 @@ def plot_overview(table: pd.DataFrame, path) -> None:
         rows = table[table["score_state"] == state].set_index("team").reindex(teams)
         for y, (team, r) in enumerate(rows.iterrows()):
             if not r["tested"]:
-                ax.text(0, y, f"n={int(r['n_team'])} (<{MIN_N})", ha="center", va="center",
-                        fontsize=7, color="#999999")
+                ax.text(0, y, f"n={int(r['n_team'])} (<{MIN_N})", ha="center", va="center", fontsize=7,
+                        color="#999999", zorder=3,
+                        bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.5})  # keep label off the zero line
                 continue
             colour = "#DB0007" if r["fdr_significant"] else "#555555"
             ax.errorbar(r["diff_minutes"], y,

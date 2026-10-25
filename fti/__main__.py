@@ -6,7 +6,7 @@ From the project root:
     python -m fti --skip-ingest --team "Leicester City"
     python -m fti --list-teams                      # the 20 valid team names
     python -m fti --skip-ingest --rebuild           # force rebuilding the substitutions table
-    python -m fti --skip-ingest --league            # all 20 teams compared, FDR-corrected
+    python -m fti --skip-ingest --league            # all 20 teams: timing + half-time rate, FDR-corrected
 
 Steps: ingest -> substitutions -> first_sub -> robustness -> charts.
 Results for each team go to results/<team>/. Stops at the first failing step.
@@ -16,7 +16,7 @@ from __future__ import annotations
 import argparse
 import time
 
-from fti import charts, first_sub, ingest, league, robustness, substitutions
+from fti import charts, first_sub, halftime, ingest, league, robustness, substitutions
 from fti.teams import DEFAULT_TEAM, list_teams, resolve_team, team_results_dir
 
 
@@ -52,7 +52,8 @@ def main() -> None:
         (f"charts: figures ({team})", lambda: charts.main(team)),
     ]
     if args.league:
-        steps = [steps[0], ("league: all teams vs league, FDR-corrected", league.main)]
+        steps = [steps[0], ("league: first-sub timing, all teams vs league, FDR-corrected", league.main),
+                 ("halftime: half-time change rate, all teams vs league, FDR-corrected", halftime.main)]
     if not args.skip_ingest:
         steps.insert(0, ("ingest: download/cache match data", lambda: ingest.main([])))
 
