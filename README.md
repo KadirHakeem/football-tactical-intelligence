@@ -2,7 +2,7 @@
 
 Identifying, quantifying and comparing football managers' **observable** tactical decisions, starting with substitutions, using public event data, transparent statistics and (later) carefully validated machine learning.
 
-> **Status:** Phase 1 in progress: data ingestion and score-at-substitution complete and tested. See [PROGRESS.md](PROGRESS.md).
+> **Status:** Phase 1 nearly complete: tested pipeline, first findings, robustness checks and charts. See [PROGRESS.md](PROGRESS.md).
 
 ## Research question (MVP)
 
@@ -13,6 +13,42 @@ Scope and principles:
 - **Observed facts vs. interpretation:** the project reports what the data shows (who, when, at what score). It does not claim to know a manager's intentions, and makes no causal claims ("this substitution won the game") without a defensible causal design.
 - **Tactical vs. injury substitutions** are analysed separately where the data distinguishes them.
 - Small samples are reported with uncertainty intervals, not as precise facts.
+
+## Key finding (Arsenal, 2015/16)
+
+**When Arsenal were winning, their first tactical substitution came about 6-8 minutes later than other Premier League teams' in the same situation.**
+
+![First tactical substitution by score state](results/figures/first_sub_by_score_state.png)
+
+| | Result |
+|---|---|
+| Gap when winning (Arsenal - rest of league, median) | **+8.0 min**, 95% bootstrap CI +0.2 to +10.2 (n = 17 vs 175) |
+| Permutation test (10,000 label shuffles) | p = 0.010 (below Bonferroni threshold 0.05/3 for three score states) |
+| Within lead size | +7.1 min ahead by 1 goal (n = 8), +6.2 min ahead by 2+ (n = 9) |
+| When drawing / losing | No reliable difference (p = 0.22 / 0.83) |
+
+**Robustness.** The gap stays above zero under every data-cleaning definition, and grows slightly once messy cases are removed:
+
+![Sensitivity of the winning-state gap](results/figures/winning_gap_sensitivity.png)
+
+**Interpretation.** Suggestive, not conclusive. This is an observed pattern in one season, consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
+
+## Method in brief
+
+1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
+2. **First tactical substitution** per team per match, as a decimal match clock.
+3. **Cleaning (main definition, "variant D"):** exclude matches with a red card before the change; treat first-half changes labelled "Tactical" as suspected injuries; exclude matches where an injury change came first. Variants A-D are reported side by side.
+4. **Uncertainty:** median with 95% percentile-bootstrap intervals (10,000 resamples), bootstrap CI for the Arsenal-league difference, and a permutation test as a second opinion.
+
+## Limitations
+
+- **One season, one team, small samples.** 17 Arsenal matches in the winning state; subgroups (8-9 matches) are too small to stand alone.
+- **Observational, not causal.** No claim that later substitutions helped or hurt results, and no claim about the manager's intentions.
+- **Label quality.** StatsBomb sometimes labels injury changes as "Tactical" (e.g. Koscielny, 11' v Norwich, 29 Nov 2015). The first-half rule is a transparent heuristic and will occasionally misclassify genuine early tactical changes.
+- **Timing and score state are entangled.** Every match starts level, so early changes are mostly made while drawing. Comparing within the same score state reduces, but does not remove, this. A survival (time-to-event) model is a planned improvement.
+- **Uncontrolled confounders.** Opponent strength, home/away, fixture congestion and squad availability are not yet adjusted for. Winning margin was checked and does not explain the gap.
+- **Multiple comparisons.** Three score states and four cleaning variants were examined. The winning-state gap appeared in the first, uncleaned analysis and is reported because it held in every variant; isolated hits (e.g. drawing under variant D, n = 6) are treated as noise.
+- **Benchmark mix.** "Rest of league" pools 19 other clubs and their managers (including mid-season managerial changes).
 
 ## Data
 
@@ -39,6 +75,9 @@ python scripts\inspect_substitutions.py    # sample substitution + goal records
 # Phase 1 pipeline
 python -m fti.ingest          # download + cache all 380 matches (one-off, ~1.2 GB local)
 python -m fti.substitutions   # score at every substitution -> data/processed/substitutions.csv
+python -m fti.first_sub       # timing by score state + sensitivity variants -> results/
+python -m fti.robustness      # winning-margin split + permutation tests -> results/
+python -m fti.charts          # figures -> results/figures/
 python -m pytest -v           # run tests
 ```
 
@@ -47,7 +86,8 @@ python -m pytest -v           # run tests
 ```
 football-tactical-intelligence/
 ├── docs/data_dictionary.md   # fields, definitions, conventions
-├── fti/                      # reusable package: ingestion, substitution analytics
+├── fti/                      # reusable package: ingestion, substitution analytics, charts
+├── results/                  # aggregate result tables and figures (no raw data)
 ├── tests/                    # automated tests
 ├── scripts/                  # Phase 0 feasibility checks
 ├── PROGRESS.md               # progress log and next steps
