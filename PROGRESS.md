@@ -178,12 +178,25 @@
 - Era note: 3-sub rule makes triple changes costly; modern frequency likely partly a rule effect (5 subs).
 - Pending: user spot-check of one Arsenal double change (e.g. Everton, 19 Mar 2016, 74') against a match report.
 
+## 2026-10-25 - Phase 2 step B: first vs second half intensity (pre-registered)
+
+**Done** - `fti/halves.py` (+3 tests, 48 total); per-half totals cached in data/processed/half_stats.csv;
+built-in data check; included in `python -m fti --league`.
+
+**Results**
+- Data: 9,908 shots, 971.4 xG, 115,402 pressure events, 380 matches; 0 team-matches with zero xG.
+- League second-half share: xG 56.5%, shots 54.7%, pressures 49.9%. Caveat: longer second-half stoppage
+  time; flat pressing implies slightly lower pressing per minute after half-time (exploratory follow-up:
+  per-minute rates).
+- No team stands out (adjusted p ~0.88 for all; range Southampton 50% to Sunderland 60%; Arsenal 53%).
+  Pre-registered null result.
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
    - ~~final-30-minute and simultaneous (double/triple) changes~~ (step A, done 2026-10-25)
-   - first vs second half intensity (shots, xG, pressing)
+   - ~~first vs second half intensity~~ (step B, done 2026-10-25; null result)
    - defensive/pressing height before vs after taking the lead
    - player-minute rotation
    - ~~half-time changes per team~~ (done 2026-10-25); possible follow-up: formal test of the

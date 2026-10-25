@@ -116,6 +116,28 @@ previous one (changes after a red card excluded).
 
 ![Double and triple changes by team](results/league/figures/simultaneous_changes_overview.png)
 
+### First vs second half intensity ("45-minute bursts")
+
+Pre-registered main measure: each team's average second-half share of its own expected goals (xG),
+compared with the rest of the league (data: 9,908 shots, 971 xG, 115,402 pressure events).
+
+| League-wide, share produced after half-time | |
+|---|---|
+| xG | 56.5% |
+| Shots | 54.7% |
+| Pressure events | 49.9% |
+
+- Attacking output rises after half-time while the amount of pressing stays flat. Second halves usually
+  include more stoppage time, so part of the xG rise is simply more minutes; that pressing does *not*
+  rise suggests pressing per minute falls slightly after the interval (consistent with fatigue).
+  Per-minute rates would be an exploratory refinement.
+- **No team stands out** (all adjusted p around 0.88; range 50% Southampton to 60% Sunderland;
+  Arsenal 53%). In 2015/16, "saving intensity for the second half" was not a distinguishing team trait
+  by this measure - a pre-registered null result, reported as such. It neither confirms nor refutes the
+  motivating observation about a current team; it shows the measure exists if current data becomes available.
+
+![Second-half share of xG by team](results/league/figures/second_half_share_overview.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -165,7 +187,7 @@ python -m pytest -v           # run tests
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
 
-# All 20 teams compared: timing, half-time rate, double/triple changes (results/league/)
+# All 20 teams compared: timing, half-time rate, double/triple changes, halves (results/league/)
 python -m fti --skip-ingest --league
 
 # ...or step by step
