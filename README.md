@@ -2,7 +2,7 @@
 
 Identifying, quantifying and comparing football managers' **observable** tactical decisions, starting with substitutions, using public event data, transparent statistics and (later) carefully validated machine learning.
 
-> **Status:** Phase 1 nearly complete: tested pipeline, first findings, robustness checks and charts. See [PROGRESS.md](PROGRESS.md).
+> **Status:** Phase 1 complete (v0.1.0): tested one-command pipeline, first finding, robustness checks and charts. See [PROGRESS.md](PROGRESS.md).
 
 ## Research question (MVP)
 
@@ -72,7 +72,11 @@ python -m pip install -r requirements.txt
 python scripts\check_data_coverage.py      # confirms 380 matches / 38 Arsenal matches
 python scripts\inspect_substitutions.py    # sample substitution + goal records
 
-# Phase 1 pipeline
+# Phase 1: whole pipeline in one command
+python -m fti                 # ingest -> substitutions -> first_sub -> robustness -> charts
+python -m pytest -v           # run tests
+
+# ...or step by step
 python -m fti.ingest          # download + cache all 380 matches (one-off, ~1.2 GB local)
 python -m fti.substitutions   # score at every substitution -> data/processed/substitutions.csv
 python -m fti.first_sub       # timing by score state + sensitivity variants -> results/
@@ -98,7 +102,7 @@ football-tactical-intelligence/
 ## Roadmap
 
 0. Feasibility & setup (done)
-1. Reproducible Arsenal substitution analytics (in progress)
+1. Reproducible Arsenal substitution analytics (done, v0.1.0)
 2. Manager comparisons across the league; careful ML only where justified
 3. Automated short analysis videos from the same pipeline
 4. Portfolio polish

@@ -89,7 +89,21 @@
 > removing red-card cases and suspected mislabelled injuries, and within both 1-goal and 2+-goal leads
 > (permutation p = 0.01). Single season, 17 Arsenal matches: suggestive, not conclusive. No claim about intent.
 
-## Next steps (Phase 1)
-1. First charts (distribution of first-sub minute, Arsenal vs league, by state) -> results/figures/.
-2. Arsenal findings + limitations section in the README.
-3. Phase 1 wrap-up: one-command pipeline, final commit/tag.
+## 2026-10-24 - Phase 1 complete (tag v0.1.0)
+
+**Done**
+- Charts (`fti/charts.py`): first tactical sub by score state (league box plot + Arsenal dots), sensitivity forest plot -> results/figures/.
+- README: key finding, method, limitations, embedded charts.
+- One-command pipeline: `python -m fti` (ingest -> substitutions -> first_sub -> robustness -> charts), ~57 s from cache.
+- Fresh pipeline run reproduced identical results (winning gap +8.0, CI +0.2 to +10.2, permutation p = 0.0101). 15 tests pass.
+
+**Learned in Phase 1**
+- Caching and resumable ingestion; package structure; unit vs integration vs smoke tests.
+- Validating derived data against ground truth (official scores); inspecting individual rows behind a summary.
+- Bootstrap CIs (single median and difference), permutation tests, Bonferroni, sensitivity analysis, forking paths.
+- Separating observed facts, statistical associations and hypotheses in writing and chart titles.
+
+## Next steps (Phase 2 - not started)
+1. Decide Phase 2 scope: manager comparisons across all 20 clubs (same season) with consistent measures and minimum sample sizes.
+2. Consider a survival (time-to-first-sub) model with time-varying score state as the more rigorous method.
+3. Optional controls: opponent strength, home/away. Add a code licence (e.g. MIT) and the StatsBomb logo attribution.

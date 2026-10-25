@@ -60,11 +60,11 @@ def load_events(match_id: int, refresh: bool = False) -> pd.DataFrame:
     return events
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Cache StatsBomb 2015/16 Premier League events.")
     parser.add_argument("--limit", type=int, default=None, help="only process the first N matches")
     parser.add_argument("--refresh", action="store_true", help="re-download even if cached")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)  # argv=None -> read the command line
 
     matches = load_matches(refresh=args.refresh).sort_values("match_date")
     match_ids = [int(m) for m in matches["match_id"]][: args.limit]
