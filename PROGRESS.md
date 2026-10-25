@@ -104,6 +104,13 @@
 - Separating observed facts, statistical associations and hypotheses in writing and chart titles.
 
 ## Next steps (Phase 2 - not started)
-1. Decide Phase 2 scope: manager comparisons across all 20 clubs (same season) with consistent measures and minimum sample sizes.
-2. Consider a survival (time-to-first-sub) model with time-varying score state as the more rigorous method.
-3. Optional controls: opponent strength, home/away. Add a code licence (e.g. MIT) and the StatsBomb logo attribution.
+1. Any-team support: `--team` option, results saved per team, chart titles that follow each
+   team's evidence, clear error for misspelled team names.
+2. League-wide manager comparison: all 20 teams, handling multiple comparisons properly.
+3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
+   - final-30-minute substitutions and simultaneous (double/triple) changes
+   - first vs second half intensity (shots, xG, pressing)
+   - defensive/pressing height before vs after taking the lead
+   - player-minute rotation
+4. Survival (time-to-first-sub) model with time-varying score state.
+5. Controls (opponent strength, home/away); MIT code licence; StatsBomb logo attribution.

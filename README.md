@@ -4,6 +4,25 @@ Identifying, quantifying and comparing football managers' **observable** tactica
 
 > **Status:** Phase 1 complete (v0.1.0): tested one-command pipeline, first finding, robustness checks and charts. See [PROGRESS.md](PROGRESS.md).
 
+## Motivation
+
+This project started with a fan's question. In October 2026, Bop Daddy
+([@awoyemijoshua61](https://x.com/awoyemijoshua61/status/2113682215250854396))
+asked whether Mikel Arteta's Arsenal were deliberately managing energy:
+controlled first halves, fresh legs and triple substitutions in the final
+30 minutes, and holding a higher line after taking the lead, while
+clearly separating what he observed from what he suspected.
+
+Questions like this are usually argued from memory and impressions. This
+project builds the tools to test them with event data: what managers
+actually do, in which game situations, and how confident we can be.
+
+Detailed current-season event data is costly, so the methods are developed
+and validated on free StatsBomb Open Data for the 2015/16 Premier League
+(Wenger's Arsenal and 19 other clubs). The same pipeline can be re-run on
+newer data if it becomes available. Note that substitution rules differ:
+3 changes per team in 2015/16 versus 5 today.
+
 ## Research question (MVP)
 
 > In the 2015/16 Premier League, how did the timing of Arsenal's first substitution vary by score state (winning / drawing / losing) at the moment of the change, and how does that compare with the league-wide distribution?
