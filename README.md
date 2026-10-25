@@ -70,6 +70,31 @@ corrected with **Benjamini-Hochberg** (false discovery rate 5%). Team-situations
   (adjusted p = 0.21). It remains a pre-chosen case study, not a league-wide standout.
 - "Team" is not the same as "manager": six clubs changed manager during 2015/16.
 
+### Half-time changes
+
+StatsBomb records half-time substitutions at the start of the second half (45:00), so the share of
+first tactical changes made at the interval can be measured directly.
+
+| Score state at the change | Share made at half-time (all teams) |
+|---|---|
+| Winning | 10% |
+| Drawing | 22% |
+| Losing | **35%** |
+
+Across the league, **23% of first tactical changes (138 of 608) were made at half-time**, and managers
+who were losing were about **3.5 times as likely** to change at the interval as those who were winning.
+This league-wide pattern is descriptive (not yet formally tested), but rests on all 608 changes.
+
+![Half-time change rate by team](results/league/figures/halftime_overview.png)
+
+- **Crystal Palace** made their first change at half-time in **10 of 18** drawn situations (56% vs 19%
+  for the rest of the league; adjusted p = 0.025) and in 16 of 35 overall, the highest in the league.
+  This is the same evidence as the timing result above, expressed as a proportion, not a second confirmation.
+- No other team stands out after correction (next smallest: Manchester United when drawing, 46%,
+  adjusted p = 0.79).
+- Caveat: a first-half injury replaced at the interval also counts as a half-time change.
+
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -119,7 +144,7 @@ python -m pytest -v           # run tests
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
 
-# All 20 teams compared (results/league/)
+# All 20 teams compared: timing + half-time rate (results/league/)
 python -m fti --skip-ingest --league
 
 # ...or step by step
