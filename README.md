@@ -138,6 +138,29 @@ compared with the rest of the league (data: 9,908 shots, 971 xG, 115,402 pressur
 
 ![Second-half share of xG by team](results/league/figures/second_half_share_overview.png)
 
+### Pressing height after taking the lead
+
+Pre-registered main measure: in each match where a team took the lead, the change in the median
+pitch position of its pressure events from before going ahead to while leading (StatsBomb x, 0 = own
+goal line, 120 = opponent's; checked: median shot x = 107). Events after a red card excluded; at least
+10 pressures in each phase; 310 qualifying team-matches.
+
+| League-wide | Median pressing position (x) |
+|---|---|
+| Before taking the lead | 56.1 |
+| While leading | 50.8 |
+| **Change** | **-5.2 units (95% CI -6.7 to -3.9)** |
+
+- **Teams clearly pressed deeper once ahead**: about 5 units, roughly **4-5 metres** on a 105 m pitch.
+  This matches the motivating post's description of a typical side that "retreats" after scoring,
+  and gives a 2015/16 baseline against which a team that holds its line would stand out.
+- **No team stands out** after correction (range Newcastle -10.8 to Norwich -0.5; Arsenal -4.0).
+  In 2015/16, dropping deeper after scoring was league-wide behaviour, not a team signature.
+- Caveat (score effects): "before the lead" includes the fresh opening minutes, so part of the drop may
+  reflect fatigue or the clock rather than a choice to defend the lead.
+
+![Pressing height after taking the lead](results/league/figures/pressing_after_lead_overview.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -187,7 +210,7 @@ python -m pytest -v           # run tests
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
 
-# All 20 teams compared: timing, half-time rate, double/triple changes, halves (results/league/)
+# All 20 teams compared: timing, half-time, double/triple, halves, pressing (results/league/)
 python -m fti --skip-ingest --league
 
 # ...or step by step

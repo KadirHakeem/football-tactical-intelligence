@@ -191,13 +191,26 @@ built-in data check; included in `python -m fti --league`.
 - No team stands out (adjusted p ~0.88 for all; range Southampton 50% to Sunderland 60%; Arsenal 53%).
   Pre-registered null result.
 
+## 2026-10-25 - Phase 2 step C: pressing height after taking the lead (pre-registered)
+
+**Done** - `fti/pressing.py` (+4 tests, 52 total); per-match results cached in data/processed/lead_pressing.csv;
+coordinate + orientation checks (median shot x 107, pressure x 44); included in `python -m fti --league`.
+
+**Results**
+- 310 qualifying team-matches. League: pressing x 56.1 before lead -> 50.8 while leading;
+  mean change -5.24 units (95% CI -6.66 to -3.86), ~4-5 m deeper. Robust league-wide effect.
+- No team stands out (all adjusted p >= 0.82); range Newcastle -10.8 to Norwich -0.5; Arsenal -4.0.
+- Caveat: score effect vs fatigue/clock not separated. Exploratory follow-up: compare pressing at the same
+  minutes in matches still level.
+- Link to motivating post: "retreat 5-8 metres" matches the 2015/16 typical behaviour (~4-5 m).
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
    - ~~final-30-minute and simultaneous (double/triple) changes~~ (step A, done 2026-10-25)
    - ~~first vs second half intensity~~ (step B, done 2026-10-25; null result)
-   - defensive/pressing height before vs after taking the lead
+   - ~~pressing height before vs after taking the lead~~ (step C, done 2026-10-25)
    - player-minute rotation
    - ~~half-time changes per team~~ (done 2026-10-25); possible follow-up: formal test of the
      league-wide winning/drawing/losing half-time trend
