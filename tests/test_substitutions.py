@@ -56,3 +56,16 @@ def test_verified_arsenal_west_ham_match():
     west_ham_first = subs[subs["team"] == "West Ham United"].iloc[0]
     assert west_ham_first["player_on"] == "Matt Jarvis"
     assert west_ham_first["score_state"] == "winning"
+
+
+def test_red_cards_before_a_substitution_are_counted_per_team():
+    events = make_events([
+        (1, 1, 20, 0, "Foul Committed", "B", "b4", None, None, None, None),   # B player sent off
+        (2, 1, 30, 0, "Substitution", "A", "a7", "Left Wing", "a15", "Tactical", None),
+        (3, 2, 60, 0, "Substitution", "B", "b9", "Center Forward", "b16", "Tactical", None),
+    ])
+    events["foul_committed_card"] = [ "Red Card", None, None]
+    subs = substitutions_with_score(events, home_team="A", away_team="B", match_id=2)
+    a_sub, b_sub = subs.iloc[0], subs.iloc[1]
+    assert (a_sub.red_cards_for, a_sub.red_cards_against) == (0, 1)
+    assert (b_sub.red_cards_for, b_sub.red_cards_against) == (1, 0)

@@ -18,7 +18,10 @@ COLUMNS = [
     "match_id", "team", "opponent", "venue", "period", "minute", "second", "event_index",
     "player_off", "position_off", "player_on", "outcome",
     "goals_for", "goals_against", "score_diff", "score_state",
+    "red_cards_for", "red_cards_against",
 ]
+
+RED_CARD_TYPES = {"Red Card", "Second Yellow"}
 
 
 def extract_goals(events: pd.DataFrame) -> pd.DataFrame:
@@ -31,6 +34,20 @@ def extract_goals(events: pd.DataFrame) -> pd.DataFrame:
     is_goal = ((events["type"] == "Shot") & (shot_outcome == "Goal")) | (events["type"] == "Own Goal For")
     goals = events.loc[is_goal, ["index", "period", "minute", "second", "team", "type"]]
     return goals.sort_values("index").reset_index(drop=True)
+
+
+def extract_red_cards(events: pd.DataFrame) -> pd.DataFrame:
+    """One row per sending-off (straight red or second yellow), in event order.
+
+    StatsBomb records cards on Foul Committed events (foul_committed_card) or on
+    Bad Behaviour events (bad_behaviour_card); `team` is the team that lost the player.
+    """
+    is_red = pd.Series(False, index=events.index)
+    for col in ("foul_committed_card", "bad_behaviour_card"):
+        if col in events.columns:
+            is_red |= events[col].isin(RED_CARD_TYPES)
+    reds = events.loc[is_red, ["index", "period", "minute", "second", "team", "player"]]
+    return reds.sort_values("index").reset_index(drop=True)
 
 
 def score_state(score_diff: int) -> str:
@@ -46,6 +63,7 @@ def substitutions_with_score(events: pd.DataFrame, home_team: str, away_team: st
                              match_id: int) -> pd.DataFrame:
     """Every substitution in one match, with the score just before it was made."""
     goals = extract_goals(events)
+    reds = extract_red_cards(events)
     subs = events[events["type"] == "Substitution"].sort_values("index")
 
     rows = []
@@ -57,6 +75,7 @@ def substitutions_with_score(events: pd.DataFrame, home_team: str, away_team: st
         before = goals[goals["index"] < sub["index"]]  # strictly earlier events only
         goals_for = int((before["team"] == team).sum())
         goals_against = int((before["team"] == opponent).sum())
+        reds_before = reds[reds["index"] < sub["index"]]
         rows.append({
             "match_id": match_id,
             "team": team,
@@ -74,6 +93,8 @@ def substitutions_with_score(events: pd.DataFrame, home_team: str, away_team: st
             "goals_against": goals_against,
             "score_diff": goals_for - goals_against,
             "score_state": score_state(goals_for - goals_against),
+            "red_cards_for": int((reds_before["team"] == team).sum()),       # own players sent off
+            "red_cards_against": int((reds_before["team"] == opponent).sum()),
         })
     return pd.DataFrame(rows, columns=COLUMNS)
 
@@ -111,6 +132,8 @@ def main() -> None:
     print(f"Goal-count check vs official scores: {len(mismatches)} mismatches")
     for line in mismatches:
         print("  ", line)
+    after_red = ((table["red_cards_for"] + table["red_cards_against"]) > 0).sum()
+    print(f"Substitutions made after a red card in the match: {after_red}")
     print("\nOutcome counts (all teams):")
     print(table["outcome"].value_counts(dropna=False).to_string())
 

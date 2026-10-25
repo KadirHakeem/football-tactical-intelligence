@@ -50,8 +50,31 @@
 - Caveat: score state and timing are entangled (all matches start drawing); within-state comparison
   partly controls this. Survival/time-to-event model is a later, more rigorous option.
 
+## 2026-10-24 - Phase 1: difference test, data-quality discovery, sensitivity analysis
+
+**Done**
+- Bootstrap CI for the difference in medians (Arsenal - rest of league) per score state.
+- Inspected Arsenal's early "drawing" first subs: StatsBomb labels some injuries as "Tactical"
+  (Koscielny 11' v Norwich, 29 Nov 2015 - confirmed injury), and red cards force changes.
+- Red-card detection (foul_committed_card / bad_behaviour_card = Red Card or Second Yellow);
+  191 of 2,109 subs came after a red card in the match. Still 0 goal mismatches.
+- Sensitivity variants A-D (exclude red-card cases; first-half "Tactical" = suspected injury;
+  exclude earlier injury change) -> results/first_sub_sensitivity.csv.
+
+**Result** - winning-state gap (Arsenal later than league), 95% bootstrap CI:
+| Variant | Gap (min) | CI |
+|---|---|---|
+| A | +5.5 | +0.5 to +9.5 |
+| B | +8.2 | +0.2 to +10.2 |
+| C | +7.9 | +0.1 to +10.2 |
+| D | +8.0 | +0.2 to +10.2 |
+- Direction consistent and slightly larger after cleaning; lower bound always near zero -> consistent but fragile.
+- Drawing D (n=6) excludes zero only after several filters: treat as noise (forking paths), not a finding.
+- Losing: no evidence of difference in any variant.
+- Caution: 12 comparisons (4 variants x 3 states) - some "significant" results expected by chance.
+
 ## Next steps (Phase 1)
-1. Bootstrap CI for the *difference* (Arsenal - league) per score state.
-2. Inspect the very early Arsenal "drawing" first sub (~22') - genuine tactical change or data issue?
-3. Sensitivity: exclude team-matches with an earlier injury change; check margin (winning by 1 vs 2+), red cards.
-4. First charts and a short Arsenal findings section in the README.
+1. Winning margin check (ahead by 1 vs 2+): is Arsenal's later timing explained by how far ahead they were?
+2. A rank-based check (permutation or Mann-Whitney) to complement the bootstrap for small n.
+3. First charts (distribution of first-sub minute, Arsenal vs league, by state).
+4. Arsenal findings + limitations section in the README.

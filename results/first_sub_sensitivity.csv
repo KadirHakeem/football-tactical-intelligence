@@ -1,0 +1,13 @@
+variant,score_state,n_team,n_league,diff_minutes,ci95_low,ci95_high,ci_excludes_zero
+A: all first tactical subs,winning,18,217,5.5,0.5,9.5,True
+A: all first tactical subs,drawing,12,258,-3.5,-39.1,7.3,False
+A: all first tactical subs,losing,8,245,1.5,-11.9,6.8,False
+B: A + exclude red card before,winning,17,196,8.2,0.2,10.2,True
+B: A + exclude red card before,drawing,10,242,0.7,-38.5,8.6,False
+B: A + exclude red card before,losing,7,234,0.4,-13.2,6.2,False
+C: B + 1st-half 'Tactical' = suspected injury,winning,18,200,7.9,0.1,10.2,True
+C: B + 1st-half 'Tactical' = suspected injury,drawing,8,234,2.5,-3.4,8.0,False
+C: B + 1st-half 'Tactical' = suspected injury,losing,8,237,-0.3,-12.5,4.2,False
+D: C + exclude earlier injury change,winning,17,175,8.0,0.2,10.2,True
+D: C + exclude earlier injury change,drawing,6,203,6.5,0.3,10.1,True
+D: C + exclude earlier injury change,losing,6,201,1.3,-13.5,5.8,False
