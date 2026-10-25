@@ -161,11 +161,28 @@
 - No other team survives correction (next: Man Utd drawing 46%, adjusted p = 0.79).
   Spurs (0/10) and Norwich (0/9) never changed first at half-time while drawing - not significant.
 
+## 2026-10-25 - Phase 2 step A: double/triple changes (pre-registered)
+
+**Done**
+- `docs/analysis_plan.md` committed (c243403) BEFORE running analyses A-E: main measures fixed in advance.
+- `fti/windows.py` (+5 tests, 45 total); included in `python -m fti --league`.
+- Window = same team, same half, each change within 60 s of the previous; tactical, no red card before.
+
+**Results**
+- 1,816 eligible changes in 1,673 windows: 1,531 single, 141 double, 1 triple.
+- 19% of team-matches had a double change; doubles earlier than singles (65.8' vs 73.4'); 78% of changes after 60'.
+- Norwich City: 16 of 38 matches (42% vs 17.5%), adjusted p = 0.004 - only standout. Inspected: pairs mostly
+  seconds apart, Aug-May, 9 losing / 4 drawing / 3 winning; season's only triple (v Chelsea, 72', losing).
+  3 of 16 pairs 35-37 s apart; ~13 would remain under a 30 s window.
+- Near-misses: Tottenham, Aston Villa 1/38 (adjusted p = 0.057). After-60' share highest: Spurs 92%, Arsenal 90%.
+- Era note: 3-sub rule makes triple changes costly; modern frequency likely partly a rule effect (5 subs).
+- Pending: user spot-check of one Arsenal double change (e.g. Everton, 19 Mar 2016, 74') against a match report.
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
-   - final-30-minute substitutions and simultaneous (double/triple) changes
+   - ~~final-30-minute and simultaneous (double/triple) changes~~ (step A, done 2026-10-25)
    - first vs second half intensity (shots, xG, pressing)
    - defensive/pressing height before vs after taking the lead
    - player-minute rotation

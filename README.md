@@ -95,6 +95,27 @@ This league-wide pattern is descriptive (not yet formally tested), but rests on 
 - Caveat: a first-half injury replaced at the interval also counts as a half-time change.
 
 
+### Double and triple changes ("fresh legs")
+
+Pre-registered in [docs/analysis_plan.md](docs/analysis_plan.md) before the analysis was run.
+A *window* is a set of tactical changes by one team, in the same half, each within 60 seconds of the
+previous one (changes after a red card excluded).
+
+- Across the league, **19% of team-matches** included a double change; there was **only one triple
+  change all season**. Double changes came earlier than single ones (median 65.8' vs 73.4'), suggesting
+  bigger interventions with more of the match left. 78% of tactical changes were made after the 60th minute.
+- **Norwich City stand out:** a double or triple change in **16 of 38 matches (42% vs 17.5%)**,
+  adjusted p = 0.004. Inspecting the matches: most pairs were seconds apart (one stoppage), spread
+  across the season and across score states; the season's only triple change was theirs.
+  About 13 of 16 would still qualify under a stricter 30-second window.
+- Near-misses: Tottenham and Aston Villa made a double change in only 1 of 38 matches each
+  (adjusted p = 0.057). Tottenham (92%) and Arsenal (90%) made the highest share of changes after 60'.
+- **Era note:** with 3 substitutes (2015/16), a triple change leaves nothing in reserve; today's
+  5-substitute rule makes triple changes far less risky. Their modern frequency may reflect the rule
+  change as much as managerial innovation.
+
+![Double and triple changes by team](results/league/figures/simultaneous_changes_overview.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -144,7 +165,7 @@ python -m pytest -v           # run tests
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
 
-# All 20 teams compared: timing + half-time rate (results/league/)
+# All 20 teams compared: timing, half-time rate, double/triple changes (results/league/)
 python -m fti --skip-ingest --league
 
 # ...or step by step
