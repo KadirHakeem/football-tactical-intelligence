@@ -216,7 +216,23 @@ lineup data check; included in `python -m fti --league`.
 - Gini differs from top-11 share (Man City most even, Gini 0.365).
 - Not causal: reverse causation (winners keep XI), mid-season manager changes, injuries; league matches only.
 
-## Next steps (Phase 2 - in progress)
+## 2026-10-25 - Phase 2 step E: survival model with controls (pre-registered)
+
+**Done** - `fti/survival.py` (+5 tests, 60 total); match timeline cached in data/processed/match_timeline.csv;
+part of the single-team pipeline (`python -m fti --team X`). MIT LICENSE added; statsmodels==0.15.0 pinned.
+StatsBomb logo deferred to Phase 4 (needs manual download from their media pack).
+
+**Results** - 10,730 minute rows, 646 team-matches, 607 first changes (Arsenal 29 of 31).
+- MAIN: Arsenal vs league while winning OR 0.66 (0.46-0.95), p = 0.026 -> Phase 1 finding survives controls.
+- Exploratory: Arsenal while drawing OR 0.48 (0.32-0.74), p = 0.0008 (median method missed it: it conditions on
+  the state at the moment of change). Hypothesis: Arsenal generally waited longer unless losing.
+- League: losing 2.51, winning 0.65 (vs drawing); team strength +1 SD 1.19; opponent strength +1 SD 0.89; home 1.08 (ns).
+- Half-time OR ~548 (wide): clustering at the interval vs near-zero changes in minutes 46-49; not literal.
+- Not yet done: survival model for every team with FDR correction (would show whether Arsenal stands out league-wide).
+
+**All pre-registered analyses (A-E) are complete.**
+
+## Next steps (Phase 2 - wrap-up)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
@@ -226,5 +242,7 @@ lineup data check; included in `python -m fti --league`.
    - ~~player-minute rotation~~ (step D, done 2026-10-25)
    - ~~half-time changes per team~~ (done 2026-10-25); possible follow-up: formal test of the
      league-wide winning/drawing/losing half-time trend
-4. Survival (time-to-first-sub) model with time-varying score state.
-5. Controls (opponent strength, home/away); MIT code licence; StatsBomb logo attribution.
+4. ~~Survival model~~ (step E, done 2026-10-25).
+5. ~~Controls; MIT licence~~ (done 2026-10-25). StatsBomb logo -> Phase 4.
+6. Phase 2 wrap-up options: survival model for all 20 teams with FDR; per-minute pressing/xG rates and
+   score-effect check (exploratory); verify one Arsenal double change vs a match report; tag v0.2.0.

@@ -2,7 +2,7 @@
 
 Identifying, quantifying and comparing football managers' **observable** tactical decisions, starting with substitutions, using public event data, transparent statistics and (later) carefully validated machine learning.
 
-> **Status:** Phase 1 complete (v0.1.0): tested one-command pipeline, first finding, robustness checks and charts. See [PROGRESS.md](PROGRESS.md).
+> **Status:** Phase 2 analyses complete: any-team pipeline, league-wide comparisons, five pre-registered analyses and a survival model (Phase 1 released as v0.1.0). See [PROGRESS.md](PROGRESS.md).
 
 ## Motivation
 
@@ -50,7 +50,9 @@ Scope and principles:
 
 ![Sensitivity of the winning-state gap](results/arsenal/figures/gap_sensitivity.png)
 
-**Interpretation.** Suggestive, not conclusive. This is an observed pattern in one season, consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
+**Controlled model (Phase 2).** A pre-registered minute-by-minute survival model, which updates the score every minute and controls for match minute, half-time, home/away, team strength and opponent strength, gives an odds ratio of **0.66 (95% CI 0.46-0.95, p = 0.026)** for Arsenal vs the league while winning: about one-third lower odds of a first change in any given minute. The finding is supported after controls (see [Survival model](#survival-model-with-controls)).
+
+**Interpretation.** Supported, not proven: one season, 31 qualifying Arsenal matches, an upper interval bound close to 1. Consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
 
 ## League-wide comparison (all 20 teams)
 
@@ -184,6 +186,36 @@ starters each, median 1,035 minutes per team-match). Descriptive ranking, one va
 
 ![Rotation by team](results/league/figures/rotation_overview.png)
 
+### Survival model with controls
+
+Pre-registered (section E). Each team-match becomes one row per second-half minute until the team's first
+tactical change; a logistic discrete-time hazard model estimates the odds of a first change in a given
+minute (10,730 minute rows, 646 team-matches, 607 first changes; standard errors clustered by match).
+
+| Term | Odds ratio (95% CI) |
+|---|---|
+| **Arsenal vs league, while winning** (main question) | **0.66 (0.46-0.95)**, p = 0.026 |
+| Arsenal vs league, while drawing (exploratory) | 0.48 (0.32-0.74), p = 0.0008 |
+| Arsenal vs league, while losing | 1.13 (0.60-2.11) |
+| League: losing vs drawing | 2.51 (2.01-3.13) |
+| League: winning vs drawing | 0.65 (0.53-0.80) |
+| League: team strength (+1 SD points) | 1.19 (1.09-1.30) |
+| League: opponent strength (+1 SD points) | 0.89 (0.81-0.98) |
+| League: home vs away | 1.08 (0.91-1.29) |
+
+- The pre-registered Arsenal result **survives the controls**.
+- **Exploratory:** Arsenal also waited longer while *drawing*. The earlier median method missed this because it
+  only uses the score at the moment of the change; the survival model uses every minute spent in each state.
+  Hypothesis: Wenger's Arsenal generally waited longer than the league unless losing.
+- League-wide: trailing teams change much sooner, leading teams wait; stronger teams change slightly sooner,
+  and changes come slightly later against stronger opponents.
+- The half-time indicator's very large odds ratio (~548, wide interval) reflects that changes cluster at the
+  interval and almost never happen in the following minutes; it is not meant to be read literally.
+- Rules as variant D: team-matches with a first-half change or red card are excluded (7 of Arsenal's 38);
+  rows stop at a second-half red card or injury change. Score state is taken at the start of each minute.
+
+![Survival model odds ratios](results/arsenal/figures/survival_odds_ratios.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -196,12 +228,16 @@ starters each, median 1,035 minutes per team-match). Descriptive ranking, one va
 - **One season, one team, small samples.** 17 Arsenal matches in the winning state; subgroups (8-9 matches) are too small to stand alone.
 - **Observational, not causal.** No claim that later substitutions helped or hurt results, and no claim about the manager's intentions.
 - **Label quality.** StatsBomb sometimes labels injury changes as "Tactical" (e.g. Koscielny, 11' v Norwich, 29 Nov 2015). The first-half rule is a transparent heuristic and will occasionally misclassify genuine early tactical changes.
-- **Timing and score state are entangled.** Every match starts level, so early changes are mostly made while drawing. Comparing within the same score state reduces, but does not remove, this. A survival (time-to-event) model is a planned improvement.
-- **Uncontrolled confounders.** Opponent strength, home/away, fixture congestion and squad availability are not yet adjusted for. Winning margin was checked and does not explain the gap.
+- **Timing and score state are entangled.** Every match starts level, so early changes are mostly made while drawing. The median comparisons only partly handle this; the survival model (score updated every minute) addresses it directly, and the Arsenal result holds there.
+- **Remaining confounders.** Home/away, team strength and opponent strength are controlled in the survival model, and winning margin was checked; fixture congestion and squad availability are not adjusted for.
 - **Multiple comparisons.** Three score states and four cleaning variants were examined. The winning-state gap appeared in the first, uncleaned analysis and is reported because it held in every variant; isolated hits (e.g. drawing under variant D, n = 6) are treated as noise.
 - **Half-time injuries are invisible.** StatsBomb records half-time changes at the start of the second half, so a player injured in the first half and replaced at the interval looks like a tactical half-time change. The first-half suspected-injury rule cannot catch these.
 - **Focus team chosen in advance.** Arsenal was selected as the case study before any analysis, which is why a per-team correction (0.05 / 3 score states) is used for its result. Scanning all 20 teams for standouts is a different question that requires a stricter league-wide correction (planned for Phase 2); under that correction, a p-value like Arsenal's 0.010 would not stand out on its own.
 - **Benchmark mix.** "Rest of league" pools 19 other clubs and their managers (including mid-season managerial changes).
+
+## Licence
+
+Code: [MIT](LICENSE). The licence covers the code only; StatsBomb Open Data is not included and remains subject to the StatsBomb user agreement.
 
 ## Data
 
@@ -263,6 +299,6 @@ football-tactical-intelligence/
 
 0. Feasibility & setup (done)
 1. Reproducible Arsenal substitution analytics (done, v0.1.0)
-2. Manager comparisons across the league; careful ML only where justified
+2. Manager comparisons across the league; careful modelling only where justified (analyses done; survival model added)
 3. Automated short analysis videos from the same pipeline
 4. Portfolio polish
