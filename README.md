@@ -67,6 +67,7 @@ Scope and principles:
 - **Timing and score state are entangled.** Every match starts level, so early changes are mostly made while drawing. Comparing within the same score state reduces, but does not remove, this. A survival (time-to-event) model is a planned improvement.
 - **Uncontrolled confounders.** Opponent strength, home/away, fixture congestion and squad availability are not yet adjusted for. Winning margin was checked and does not explain the gap.
 - **Multiple comparisons.** Three score states and four cleaning variants were examined. The winning-state gap appeared in the first, uncleaned analysis and is reported because it held in every variant; isolated hits (e.g. drawing under variant D, n = 6) are treated as noise.
+- **Focus team chosen in advance.** Arsenal was selected as the case study before any analysis, which is why a per-team correction (0.05 / 3 score states) is used for its result. Scanning all 20 teams for standouts is a different question that requires a stricter league-wide correction (planned for Phase 2); under that correction, a p-value like Arsenal's 0.010 would not stand out on its own.
 - **Benchmark mix.** "Rest of league" pools 19 other clubs and their managers (including mid-season managerial changes).
 
 ## Data
