@@ -145,6 +145,22 @@
 - New limitation: half-time injury replacements look like tactical half-time changes (recorded in period 2).
 - Better framing for Palace: a proportion ("10 of 18 at half-time") rather than "18 minutes earlier".
 
+## 2026-10-25 - Phase 2 step 3: half-time change rate
+
+**Done** - `fti/halftime.py` (+4 tests, 40 total); `python -m fti --league` now runs timing + half-time.
+- Half-time change = first tactical sub at period 2, clock exactly 45:00.
+- Per team x state: share at half-time, Wilson 95% CI, permutation test on difference in shares,
+  Benjamini-Hochberg (FDR 5%), min 8 matches. Chart: results/league/figures/halftime_overview.png.
+- README: league-wide section + half-time subsection; overview chart labels fixed (white background).
+
+**Results**
+- League: 23% of first tactical changes at half-time (138 of 608); winning 10%, drawing 22%, losing 35%.
+  Losing managers ~3.5x as likely to change at the interval as winning ones. Descriptive, not yet tested.
+- Crystal Palace, drawing: 10 of 18 (56% vs 19%), adjusted p = 0.025 - same evidence as the timing
+  result (identical p), not a second confirmation. Pooled: 16 of 35 (46%), highest in league (descriptive).
+- No other team survives correction (next: Man Utd drawing 46%, adjusted p = 0.79).
+  Spurs (0/10) and Norwich (0/9) never changed first at half-time while drawing - not significant.
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
@@ -153,6 +169,7 @@
    - first vs second half intensity (shots, xG, pressing)
    - defensive/pressing height before vs after taking the lead
    - player-minute rotation
-   - half-time changes: share of first changes made at the interval, per manager
+   - ~~half-time changes per team~~ (done 2026-10-25); possible follow-up: formal test of the
+     league-wide winning/drawing/losing half-time trend
 4. Survival (time-to-first-sub) model with time-varying score state.
 5. Controls (opponent strength, home/away); MIT code licence; StatsBomb logo attribution.
