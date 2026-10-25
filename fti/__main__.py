@@ -6,6 +6,7 @@ From the project root:
     python -m fti --skip-ingest --team "Leicester City"
     python -m fti --list-teams                      # the 20 valid team names
     python -m fti --skip-ingest --rebuild           # force rebuilding the substitutions table
+    python -m fti --skip-ingest --league            # all 20 teams compared, FDR-corrected
 
 Steps: ingest -> substitutions -> first_sub -> robustness -> charts.
 Results for each team go to results/<team>/. Stops at the first failing step.
@@ -15,7 +16,7 @@ from __future__ import annotations
 import argparse
 import time
 
-from fti import charts, first_sub, ingest, robustness, substitutions
+from fti import charts, first_sub, ingest, league, robustness, substitutions
 from fti.teams import DEFAULT_TEAM, list_teams, resolve_team, team_results_dir
 
 
@@ -24,6 +25,8 @@ def main() -> None:
     parser.add_argument("--skip-ingest", action="store_true", help="use the existing data cache")
     parser.add_argument("--team", default=DEFAULT_TEAM, help=f"team to analyse (default: {DEFAULT_TEAM})")
     parser.add_argument("--list-teams", action="store_true", help="print the valid team names and exit")
+    parser.add_argument("--league", action="store_true",
+                        help="run the league-wide comparison of all teams instead of a single-team analysis")
     parser.add_argument("--rebuild", action="store_true",
                         help="rebuild the substitutions table even if it is up to date")
     args = parser.parse_args()
@@ -48,6 +51,8 @@ def main() -> None:
         (f"robustness: margin split + permutation tests ({team})", lambda: robustness.main(team)),
         (f"charts: figures ({team})", lambda: charts.main(team)),
     ]
+    if args.league:
+        steps = [steps[0], ("league: all teams vs league, FDR-corrected", league.main)]
     if not args.skip_ingest:
         steps.insert(0, ("ingest: download/cache match data", lambda: ingest.main([])))
 
@@ -57,7 +62,8 @@ def main() -> None:
         t0 = time.perf_counter()
         step()
         print(f"--- done in {time.perf_counter() - t0:.1f}s")
-    print(f"\nPipeline complete in {time.perf_counter() - start:.1f}s. Results in {team_results_dir(team)}")
+    where = league.LEAGUE_DIR if args.league else team_results_dir(team)
+    print(f"\nPipeline complete in {time.perf_counter() - start:.1f}s. Results in {where}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,4 @@
+score_state,n_team,n_league,diff_minutes,permutation_p
+winning,7,185,6.3,0.1716
+drawing,18,191,-18.2,0.0006
+losing,10,197,-12.9,0.1008

@@ -1,0 +1,7 @@
+group,score_state,n,median_minute,ci95_low,ci95_high
+Crystal Palace,winning,9,72.6,66.3,84.5
+Crystal Palace,drawing,19,45.0,45.0,61.4
+Crystal Palace,losing,10,45.0,45.0,62.3
+Rest of league,winning,226,66.4,64.8,68.2
+Rest of league,drawing,251,62.0,60.8,63.4
+Rest of league,losing,243,57.8,55.2,59.5
