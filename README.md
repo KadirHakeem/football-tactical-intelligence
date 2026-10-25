@@ -161,6 +161,29 @@ goal line, 120 = opponent's; checked: median shot x = 107). Events after a red c
 
 ![Pressing height after taking the lead](results/league/figures/pressing_after_lead_overview.png)
 
+### Rotation
+
+Pre-registered main measure: share of each team's league minutes played by its 11 most-used players
+(minutes from Starting XI events, substitutions and red cards; checked: 760 team-matches, exactly 11
+starters each, median 1,035 minutes per team-match). Descriptive ranking, one value per team.
+
+| Most settled | Top-11 share | Players used | Most rotated | Top-11 share | Players used |
+|---|---|---|---|---|---|
+| Leicester City | 85% | 24 | Sunderland | 63% | 33 |
+| Tottenham Hotspur | 82% | 24 | Aston Villa | 67% | 29 |
+| Watford | 77% | 25 | Liverpool | 67% | 34 |
+| AFC Bournemouth | 76% | 29 | Norwich City | 68% | 28 |
+| Arsenal | 76% | 25 | Manchester City | 69% | 26 |
+
+- Champions **Leicester** gave 85% of league minutes to 11 players and used only 24 all season.
+- The secondary measure (Gini) captures something different: Manchester City had the most even minutes
+  overall (Gini 0.365) but a middling top-11 share - a broader group of regulars.
+- **Not causal.** Settled teams finishing high does not show that a settled XI wins: winning teams have no
+  reason to change, several of the most-rotated clubs changed manager mid-season, and injuries force rotation.
+- League matches only: cup and European rotation (e.g. Tottenham, Liverpool in Europe) is not included.
+
+![Rotation by team](results/league/figures/rotation_overview.png)
+
 ## Method in brief
 
 1. **Score at each substitution:** goals (incl. own goals) counted strictly before each change, using StatsBomb's event order. Validated: reproduces all 380 official final scores.
@@ -210,7 +233,7 @@ python -m pytest -v           # run tests
 python -m fti --list-teams
 python -m fti --skip-ingest --team "Leicester City"
 
-# All 20 teams compared: timing, half-time, double/triple, halves, pressing (results/league/)
+# All 20 teams compared: timing, half-time, double/triple, halves, pressing, rotation (results/league/)
 python -m fti --skip-ingest --league
 
 # ...or step by step

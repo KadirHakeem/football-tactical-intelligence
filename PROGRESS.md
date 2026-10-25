@@ -204,6 +204,18 @@ coordinate + orientation checks (median shot x 107, pressure x 44); included in 
   minutes in matches still level.
 - Link to motivating post: "retreat 5-8 metres" matches the 2015/16 typical behaviour (~4-5 m).
 
+## 2026-10-25 - Phase 2 step D: rotation (pre-registered, descriptive)
+
+**Done** - `fti/rotation.py` (+3 tests, 55 total); player minutes cached in data/processed/player_minutes.csv;
+lineup data check; included in `python -m fti --league`.
+
+**Results**
+- Sanity: 760 team-matches, 11 starters each, median 1,035 min per team-match (905-1,113), ~39.1-39.5k per team.
+- Top-11 share: Leicester 85% (24 players), Spurs 82%, Watford 77%, Bournemouth 76%, Arsenal 76% (5th) ...
+  Sunderland 63% (33), Villa 67%, Liverpool 67% (34 players, most used), Norwich 68%, Man City 69%.
+- Gini differs from top-11 share (Man City most even, Gini 0.365).
+- Not causal: reverse causation (winners keep XI), mid-season manager changes, injuries; league matches only.
+
 ## Next steps (Phase 2 - in progress)
 1. ~~Any-team support~~ (done 2026-10-25).
 2. ~~League-wide comparison~~ (done 2026-10-25).
@@ -211,7 +223,7 @@ coordinate + orientation checks (median shot x 107, pressure x 44); included in 
    - ~~final-30-minute and simultaneous (double/triple) changes~~ (step A, done 2026-10-25)
    - ~~first vs second half intensity~~ (step B, done 2026-10-25; null result)
    - ~~pressing height before vs after taking the lead~~ (step C, done 2026-10-25)
-   - player-minute rotation
+   - ~~player-minute rotation~~ (step D, done 2026-10-25)
    - ~~half-time changes per team~~ (done 2026-10-25); possible follow-up: formal test of the
      league-wide winning/drawing/losing half-time trend
 4. Survival (time-to-first-sub) model with time-varying score state.
