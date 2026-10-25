@@ -8,7 +8,7 @@ From the project root:
     python -m fti --skip-ingest --rebuild           # force rebuilding the substitutions table
     python -m fti --skip-ingest --league            # all 20 teams: timing, half-time, double/triple, halves, pressing, rotation
 
-Steps: ingest -> substitutions -> first_sub -> robustness -> charts.
+Steps: ingest -> substitutions -> first_sub -> robustness -> survival -> charts.
 Results for each team go to results/<team>/. Stops at the first failing step.
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ import argparse
 import time
 
 from fti import (charts, first_sub, halftime, halves, ingest, league, pressing, robustness,
-                 rotation, substitutions, windows)
+                 rotation, substitutions, survival, windows)
 from fti.teams import DEFAULT_TEAM, list_teams, resolve_team, team_results_dir
 
 
@@ -50,6 +50,7 @@ def main() -> None:
         ("substitutions: score at every substitution (all teams)", substitutions_step),
         (f"first_sub: timing by score state + sensitivity ({team})", lambda: first_sub.main(team)),
         (f"robustness: margin split + permutation tests ({team})", lambda: robustness.main(team)),
+        (f"survival: minute-by-minute model with controls ({team})", lambda: survival.main(team)),
         (f"charts: figures ({team})", lambda: charts.main(team)),
     ]
     if args.league:
