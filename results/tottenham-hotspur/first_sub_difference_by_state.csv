@@ -1,0 +1,4 @@
+score_state,n_team,n_league,diff_minutes,ci95_low,ci95_high,ci_excludes_zero
+winning,18,217,3.2,-0.3,7.6,False
+drawing,14,256,3.5,0.5,9.3,True
+losing,6,247,-2.2,-8.8,4.3,False

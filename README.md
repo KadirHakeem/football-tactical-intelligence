@@ -37,7 +37,7 @@ Scope and principles:
 
 **When Arsenal were winning, their first tactical substitution came about 6-8 minutes later than other Premier League teams' in the same situation.**
 
-![First tactical substitution by score state](results/figures/first_sub_by_score_state.png)
+![First tactical substitution by score state](results/arsenal/figures/first_sub_by_score_state.png)
 
 | | Result |
 |---|---|
@@ -48,7 +48,7 @@ Scope and principles:
 
 **Robustness.** The gap stays above zero under every data-cleaning definition, and grows slightly once messy cases are removed:
 
-![Sensitivity of the winning-state gap](results/figures/winning_gap_sensitivity.png)
+![Sensitivity of the winning-state gap](results/arsenal/figures/gap_sensitivity.png)
 
 **Interpretation.** Suggestive, not conclusive. This is an observed pattern in one season, consistent with (for example) reluctance to disturb a winning side, but the data cannot show *why* it happened.
 
@@ -91,16 +91,20 @@ python -m pip install -r requirements.txt
 python scripts\check_data_coverage.py      # confirms 380 matches / 38 Arsenal matches
 python scripts\inspect_substitutions.py    # sample substitution + goal records
 
-# Phase 1: whole pipeline in one command
+# Whole pipeline in one command (Arsenal by default)
 python -m fti                 # ingest -> substitutions -> first_sub -> robustness -> charts
 python -m pytest -v           # run tests
+
+# Any other team (results go to results/<team>/, e.g. results/leicester-city/)
+python -m fti --list-teams
+python -m fti --skip-ingest --team "Leicester City"
 
 # ...or step by step
 python -m fti.ingest          # download + cache all 380 matches (one-off, ~1.2 GB local)
 python -m fti.substitutions   # score at every substitution -> data/processed/substitutions.csv
-python -m fti.first_sub       # timing by score state + sensitivity variants -> results/
-python -m fti.robustness      # winning-margin split + permutation tests -> results/
-python -m fti.charts          # figures -> results/figures/
+python -m fti.first_sub       # timing by score state + sensitivity variants -> results/<team>/
+python -m fti.robustness      # winning-margin split + permutation tests -> results/<team>/
+python -m fti.charts          # figures -> results/<team>/figures/  (each accepts --team)
 python -m pytest -v           # run tests
 ```
 
@@ -110,7 +114,7 @@ python -m pytest -v           # run tests
 football-tactical-intelligence/
 ├── docs/data_dictionary.md   # fields, definitions, conventions
 ├── fti/                      # reusable package: ingestion, substitution analytics, charts
-├── results/                  # aggregate result tables and figures (no raw data)
+├── results/<team>/           # per-team result tables and figures (no raw data)
 ├── tests/                    # automated tests
 ├── scripts/                  # Phase 0 feasibility checks
 ├── PROGRESS.md               # progress log and next steps

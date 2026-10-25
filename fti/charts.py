@@ -1,7 +1,11 @@
-"""Charts for the first-substitution analysis, saved as PNGs in results/figures/.
+"""Charts for the first-substitution analysis, saved as PNGs in results/<team>/figures/.
 
 Run from the project root (after python -m fti.substitutions):
-    python -m fti.charts
+    python -m fti.charts                        # Arsenal (default)
+    python -m fti.charts --team "Leicester City"
+
+Chart titles are generated from the evidence (see headline()), so they never claim a
+difference the numbers do not support.
 """
 from __future__ import annotations
 
@@ -15,10 +19,12 @@ import numpy as np
 import pandas as pd
 from matplotlib.patches import Patch
 
-from fti.first_sub import RESULTS_DIR, STATES, TEAM, VARIANTS, apply_variant, sensitivity
+from fti.first_sub import STATES, TEAM, VARIANTS, apply_variant, compare_to_league, sensitivity
+from fti.robustness import permutation_table
 from fti.substitutions import PROCESSED_DIR
+from fti.teams import team_from_command_line, team_results_dir
 
-FIG_DIR = RESULTS_DIR / "figures"
+ALPHA = 0.05
 TEAM_COLOUR = "#DB0007"
 LEAGUE_COLOUR = "#8C8C8C"
 LEAGUE_FILL = "#E9E9E9"
@@ -26,7 +32,34 @@ SOURCE_NOTE = ("Data: StatsBomb Open Data, Premier League 2015/16. Excludes chan
                "suspected injury changes, and matches where an injury change came first.")
 
 
-def plot_first_sub_by_state(first: pd.DataFrame, path: Path, team: str = TEAM) -> None:
+def headline(team: str, comparison: pd.DataFrame, perms: pd.DataFrame,
+             alpha: float = ALPHA) -> tuple[str, str | None]:
+    """Chart title from the evidence, and the score state it refers to (None if no clear difference).
+
+    A directional claim is made only when BOTH the bootstrap CI for the gap excludes zero AND the
+    permutation p-value is below alpha / number of score states (Bonferroni). If several states
+    qualify, the largest gap is used.
+    """
+    merged = comparison.merge(perms[["score_state", "permutation_p"]], on="score_state")
+    clear = merged[merged["ci_excludes_zero"] & (merged["permutation_p"] < alpha / len(STATES))]
+    if clear.empty:
+        return f"No clear difference from the league in {team}'s first-substitution timing", None
+    row = clear.loc[clear["diff_minutes"].abs().idxmax()]
+    direction = "later" if row["diff_minutes"] > 0 else "earlier"
+    return f"When {row['score_state']}, {team}'s first tactical change came {direction} than the league's", row["score_state"]
+
+
+def sensitivity_title(rows: pd.DataFrame, state: str, team: str) -> str:
+    """'stays above/below zero' only if every variant's CI excludes zero on the same side."""
+    if (rows["ci95_low"] > 0).all():
+        return f"The '{state}' gap stays above zero under every data-cleaning definition"
+    if (rows["ci95_high"] < 0).all():
+        return f"The '{state}' gap stays below zero under every data-cleaning definition"
+    return f"{team} vs league when {state}: the gap under each data-cleaning definition"
+
+
+def plot_first_sub_by_state(first: pd.DataFrame, path: Path, team: str = TEAM,
+                            title: str | None = None) -> None:
     """League box plot vs individual team matches (dots) for each score state."""
     fig, ax = plt.subplots(figsize=(10, 5.8))
     rng = np.random.default_rng(0)  # fixed jitter -> identical image every run
@@ -58,7 +91,7 @@ def plot_first_sub_by_state(first: pd.DataFrame, path: Path, team: str = TEAM) -
         plt.Line2D([], [], marker="o", linestyle="", color=TEAM_COLOUR, label=f"{team}: one dot per match"),
         plt.Line2D([], [], color=TEAM_COLOUR, linewidth=3, label=f"{team} median"),
     ], loc="upper left", fontsize=9, frameon=False)
-    fig.suptitle(f"When winning, {team}'s first tactical change came later than the league's",
+    fig.suptitle(title or f"{team} vs league: first tactical substitution by score state",
                  x=0.01, ha="left", fontsize=14, fontweight="bold")
     ax.set_title("Score state at the moment of each team's first tactical substitution",
                  loc="left", fontsize=10, color="#444444")
@@ -84,7 +117,7 @@ def plot_sensitivity(sens: pd.DataFrame, path: Path, state: str = "winning", tea
     ax.set_xlabel(f"{team} median minus league median (minutes), with 95% bootstrap interval")
     ax.grid(axis="x", alpha=0.3)
     ax.spines[["top", "right"]].set_visible(False)
-    fig.suptitle(f"The '{state}' gap stays above zero under every data-cleaning definition",
+    fig.suptitle(sensitivity_title(rows, state, team),
                  x=0.01, ha="left", fontsize=13, fontweight="bold")
     fig.text(0.01, 0.01, "Data: StatsBomb Open Data, Premier League 2015/16.", fontsize=7.5, color="#666666")
     fig.tight_layout(rect=(0, 0.05, 1, 1))
@@ -93,16 +126,19 @@ def plot_sensitivity(sens: pd.DataFrame, path: Path, state: str = "winning", tea
     plt.close(fig)
 
 
-def main() -> None:
+def main(team: str = TEAM) -> None:
     subs = pd.read_csv(PROCESSED_DIR / "substitutions.csv")
     first = apply_variant(subs, *VARIANTS[-1][1:])
 
-    out1 = FIG_DIR / "first_sub_by_score_state.png"
-    plot_first_sub_by_state(first, out1)
-    out2 = FIG_DIR / "winning_gap_sensitivity.png"
-    plot_sensitivity(sensitivity(subs), out2)
+    title, state = headline(team, compare_to_league(first, team), permutation_table(first, team))
+    fig_dir = team_results_dir(team) / "figures"
+    out1 = fig_dir / "first_sub_by_score_state.png"
+    plot_first_sub_by_state(first, out1, team, title=title)
+    out2 = fig_dir / "gap_sensitivity.png"
+    plot_sensitivity(sensitivity(subs, team), out2, state=state or "winning", team=team)
+    print(f"Headline: {title}")
     print(f"Saved:\n  {out1}\n  {out2}")
 
 
 if __name__ == "__main__":
-    main()
+    main(team_from_command_line("Charts for the first-substitution analysis."))

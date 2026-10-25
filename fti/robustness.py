@@ -1,7 +1,8 @@
 """Robustness checks for the first-substitution findings, using the strict variant D definition.
 
 Run from the project root (after python -m fti.substitutions):
-    python -m fti.robustness
+    python -m fti.robustness                        # Arsenal (default)
+    python -m fti.robustness --team "Leicester City"
 
 1. Winning margin: is the team's later timing when ahead explained by how far ahead it was?
 2. Permutation test: a second, label-shuffling opinion on each team-vs-league gap.
@@ -11,8 +12,9 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from fti.first_sub import RESULTS_DIR, STATES, TEAM, VARIANTS, apply_variant, bootstrap_median_diff_ci
+from fti.first_sub import STATES, TEAM, VARIANTS, apply_variant, bootstrap_median_diff_ci
 from fti.substitutions import PROCESSED_DIR
+from fti.teams import team_from_command_line, team_results_dir
 
 
 def permutation_test_median_diff(a, b, n_perm: int = 10_000, seed: int = 42) -> float:
@@ -67,32 +69,33 @@ def permutation_table(first: pd.DataFrame, team: str = TEAM) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def main() -> None:
+def main(team: str = TEAM) -> None:
     subs = pd.read_csv(PROCESSED_DIR / "substitutions.csv")
     name, *flags = VARIANTS[-1]
     first = apply_variant(subs, *flags)
     print(f"Definition: {name}")
 
     winning = first[first["score_state"] == "winning"]
-    is_team = winning["team"] == TEAM
+    is_team = winning["team"] == team
     share_team = (winning.loc[is_team, "score_diff"] >= 2).mean()
     share_league = (winning.loc[~is_team, "score_diff"] >= 2).mean()
     print(f"\nWhen winning at the first tactical sub, share ahead by 2+ goals: "
-          f"{TEAM} {share_team:.0%}  |  rest of league {share_league:.0%}")
+          f"{team} {share_team:.0%}  |  rest of league {share_league:.0%}")
 
-    margins = margin_table(first)
-    print(f"\nWinning state split by lead size ({TEAM} minus league, minutes, 95% bootstrap CI)")
+    margins = margin_table(first, team)
+    print(f"\nWinning state split by lead size ({team} minus league, minutes, 95% bootstrap CI)")
     print(margins.to_string(index=False))
 
-    perms = permutation_table(first)
-    print(f"\nPermutation test, {TEAM} vs league (10,000 label shuffles)")
+    perms = permutation_table(first, team)
+    print(f"\nPermutation test, {team} vs league (10,000 label shuffles)")
     print(perms.to_string(index=False))
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    margins.to_csv(RESULTS_DIR / "robustness_winning_margin.csv", index=False)
-    perms.to_csv(RESULTS_DIR / "robustness_permutation.csv", index=False)
-    print(f"\nSaved 2 result tables -> {RESULTS_DIR}")
+    out_dir = team_results_dir(team)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    margins.to_csv(out_dir / "robustness_winning_margin.csv", index=False)
+    perms.to_csv(out_dir / "robustness_permutation.csv", index=False)
+    print(f"\nSaved 2 result tables -> {out_dir}")
 
 
 if __name__ == "__main__":
-    main()
+    main(team_from_command_line("Robustness checks: winning margin and permutation tests."))

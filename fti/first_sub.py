@@ -1,9 +1,10 @@
 """First tactical substitution timing by score state: one team vs the rest of the league.
 
 Run from the project root (after python -m fti.substitutions):
-    python -m fti.first_sub
+    python -m fti.first_sub                       # Arsenal (default)
+    python -m fti.first_sub --team "Leicester City"
 
-Writes aggregate results to results/ (aggregates only, no raw StatsBomb data, so they
+Writes aggregate results to results/<team>/ (aggregates only, no raw StatsBomb data, so they
 can be committed).
 """
 from __future__ import annotations
@@ -11,11 +12,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from fti.ingest import PROJECT_ROOT
 from fti.substitutions import PROCESSED_DIR
+from fti.teams import DEFAULT_TEAM, RESULTS_ROOT, team_from_command_line, team_results_dir
 
-RESULTS_DIR = PROJECT_ROOT / "results"
-TEAM = "Arsenal"
+RESULTS_DIR = RESULTS_ROOT  # kept for backwards compatibility; per-team folders via team_results_dir()
+TEAM = DEFAULT_TEAM
 STATES = ["winning", "drawing", "losing"]
 TEAM_MATCHES_IN_SEASON = 380 * 2
 
@@ -137,7 +138,7 @@ def sensitivity(subs: pd.DataFrame, team: str = TEAM) -> pd.DataFrame:
     return pd.concat(tables, ignore_index=True)
 
 
-def main() -> None:
+def main(team: str = TEAM) -> None:
     path = PROCESSED_DIR / "substitutions.csv"
     if not path.exists():
         raise SystemExit(f"{path} not found - run: python -m fti.substitutions")
@@ -146,32 +147,33 @@ def main() -> None:
         raise SystemExit("substitutions.csv is out of date - re-run: python -m fti.substitutions")
 
     first = first_tactical_subs(subs)
-    arsenal = first[first["team"] == TEAM]
+    team_first = first[first["team"] == team]
     print(f"Team-matches with a tactical sub: {len(first)} of {TEAM_MATCHES_IN_SEASON} "
-          f"({TEAM}: {len(arsenal)} of 38)")
+          f"({team}: {len(team_first)} of 38)")
 
-    summary = summarise(first)
+    summary = summarise(first, team)
     print("\nVariant A - first tactical substitution: median minute (95% bootstrap CI)")
     print(summary.to_string(index=False))
 
-    sens = sensitivity(subs)
-    print(f"\nSensitivity: {TEAM} median minus rest-of-league median (minutes, 95% CI)")
+    sens = sensitivity(subs, team)
+    print(f"\nSensitivity: {team} median minus rest-of-league median (minutes, 95% CI)")
     for state in STATES:
         print(f"\n  {state.upper()}")
         print(sens[sens["score_state"] == state].drop(columns="score_state").to_string(index=False))
 
     strict = apply_variant(subs, *VARIANTS[-1][1:])
-    drawing = strict[(strict["team"] == TEAM) & (strict["score_state"] == "drawing")].sort_values("clock")
-    print(f"\n{TEAM} first tactical subs while drawing under variant D ({len(drawing)}):")
+    drawing = strict[(strict["team"] == team) & (strict["score_state"] == "drawing")].sort_values("clock")
+    print(f"\n{team} first tactical subs while drawing under variant D ({len(drawing)}):")
     cols = ["match_date", "opponent", "period", "clock", "player_off", "position_off", "player_on"]
     print(drawing[cols].round({"clock": 1}).to_string(index=False))
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    summary.to_csv(RESULTS_DIR / "first_sub_timing_by_state.csv", index=False)
-    compare_to_league(first).to_csv(RESULTS_DIR / "first_sub_difference_by_state.csv", index=False)
-    sens.to_csv(RESULTS_DIR / "first_sub_sensitivity.csv", index=False)
-    print(f"\nSaved 3 result tables -> {RESULTS_DIR}")
+    out_dir = team_results_dir(team)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    summary.to_csv(out_dir / "first_sub_timing_by_state.csv", index=False)
+    compare_to_league(first, team).to_csv(out_dir / "first_sub_difference_by_state.csv", index=False)
+    sens.to_csv(out_dir / "first_sub_sensitivity.csv", index=False)
+    print(f"\nSaved 3 result tables -> {out_dir}")
 
 
 if __name__ == "__main__":
-    main()
+    main(team_from_command_line("First tactical substitution timing by score state."))

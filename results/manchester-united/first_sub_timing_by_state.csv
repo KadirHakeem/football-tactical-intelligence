@@ -1,0 +1,7 @@
+group,score_state,n,median_minute,ci95_low,ci95_high
+Manchester United,winning,15,63.5,59.7,67.6
+Manchester United,drawing,18,51.6,45.0,63.7
+Manchester United,losing,5,45.0,45.0,69.3
+Rest of league,winning,220,66.9,65.4,68.8
+Rest of league,drawing,252,61.9,60.1,63.4
+Rest of league,losing,248,57.7,55.1,59.4

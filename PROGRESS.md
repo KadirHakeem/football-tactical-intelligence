@@ -103,14 +103,39 @@
 - Bootstrap CIs (single median and difference), permutation tests, Bonferroni, sensitivity analysis, forking paths.
 - Separating observed facts, statistical associations and hypotheses in writing and chart titles.
 
-## Next steps (Phase 2 - not started)
-1. Any-team support: `--team` option, results saved per team, chart titles that follow each
-   team's evidence, clear error for misspelled team names.
+## 2026-10-25 - Phase 2 step 1: any-team support
+
+**Done**
+- `fti/teams.py`: list/resolve team names (any capitalisation, common aliases e.g. "Spurs",
+  suggestions for misspellings); per-team output folders results/<team-slug>/.
+- `--team` and `--list-teams` on the pipeline (`python -m fti`) and on each module; Arsenal default.
+- Evidence-based chart titles: a directional headline only if the bootstrap CI excludes zero AND
+  permutation p < 0.05/3; otherwise "No clear difference". Sensitivity title claims robustness only
+  if all variants agree.
+- Pipeline skips rebuilding substitutions.csv when it is newer than its inputs (`--rebuild` forces).
+- Arsenal results moved to results/arsenal/ and reproduced identically; README links updated.
+
+**Leicester City (2015/16) - first run**
+- Winning +2.1 min (p = 0.51), drawing -0.5 (p = 0.88): no difference from the league.
+- Losing -13.2 min: CI excludes zero in all variants but n = 6, p = 0.064 -> rule correctly says
+  "No clear difference". Median exactly 45.0: tied half-time values make percentile bootstrap CIs
+  unreliably tight with tiny n - the permutation requirement guards against this.
+
+**Hypotheses noted (not findings)**
+- Half-time changes are a distinct decision moment (4 of Leicester's 12 drawing first changes at 45:00);
+  "share of first changes at half-time" per manager links to the "45-minute bursts" idea.
+- Lead size: Leicester slightly earlier when 1 up (-3.0, CI crosses 0), later when 2+ up
+  (+5.8, CI +1.9 to +11.0, n = 8) - post-hoc subgroup, hypothesis only.
+- Data quirk: some names contain doubled apostrophes (e.g. "N''Golo Kanté"); use lineup display names later.
+
+## Next steps (Phase 2 - in progress)
+1. ~~Any-team support~~ (done 2026-10-25).
 2. League-wide manager comparison: all 20 teams, handling multiple comparisons properly.
 3. Hypotheses from the motivating post (Bop Daddy, @awoyemijoshua61), tested on 2015/16:
    - final-30-minute substitutions and simultaneous (double/triple) changes
    - first vs second half intensity (shots, xG, pressing)
    - defensive/pressing height before vs after taking the lead
    - player-minute rotation
+   - half-time changes: share of first changes made at the interval, per manager
 4. Survival (time-to-first-sub) model with time-varying score state.
 5. Controls (opponent strength, home/away); MIT code licence; StatsBomb logo attribution.

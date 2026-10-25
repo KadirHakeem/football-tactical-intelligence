@@ -1,11 +1,14 @@
-"""Run the full Phase 1 pipeline in order with one command.
+"""Run the full pipeline in order with one command.
 
 From the project root:
-    python -m fti                 # all steps (first run downloads ~1.2 GB of match data)
-    python -m fti --skip-ingest   # reuse the existing local cache
+    python -m fti                                   # all steps for Arsenal (first run downloads ~1.2 GB)
+    python -m fti --skip-ingest                     # reuse the existing local cache
+    python -m fti --skip-ingest --team "Leicester City"
+    python -m fti --list-teams                      # the 20 valid team names
+    python -m fti --skip-ingest --rebuild           # force rebuilding the substitutions table
 
 Steps: ingest -> substitutions -> first_sub -> robustness -> charts.
-Stops at the first failing step.
+Results for each team go to results/<team>/. Stops at the first failing step.
 """
 from __future__ import annotations
 
@@ -13,18 +16,37 @@ import argparse
 import time
 
 from fti import charts, first_sub, ingest, robustness, substitutions
+from fti.teams import DEFAULT_TEAM, list_teams, resolve_team, team_results_dir
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the full analysis pipeline.")
     parser.add_argument("--skip-ingest", action="store_true", help="use the existing data cache")
+    parser.add_argument("--team", default=DEFAULT_TEAM, help=f"team to analyse (default: {DEFAULT_TEAM})")
+    parser.add_argument("--list-teams", action="store_true", help="print the valid team names and exit")
+    parser.add_argument("--rebuild", action="store_true",
+                        help="rebuild the substitutions table even if it is up to date")
     args = parser.parse_args()
 
+    if args.list_teams:
+        print("\n".join(list_teams()))
+        return
+    try:
+        team = resolve_team(args.team)
+    except ValueError as exc:
+        raise SystemExit(str(exc))
+
+    def substitutions_step() -> None:
+        if not args.rebuild and substitutions.table_is_current():
+            print("substitutions.csv is up to date - skipped (use --rebuild to force)")
+        else:
+            substitutions.main()
+
     steps = [
-        ("substitutions: score at every substitution", substitutions.main),
-        ("first_sub: timing by score state + sensitivity", first_sub.main),
-        ("robustness: margin split + permutation tests", robustness.main),
-        ("charts: figures", charts.main),
+        ("substitutions: score at every substitution (all teams)", substitutions_step),
+        (f"first_sub: timing by score state + sensitivity ({team})", lambda: first_sub.main(team)),
+        (f"robustness: margin split + permutation tests ({team})", lambda: robustness.main(team)),
+        (f"charts: figures ({team})", lambda: charts.main(team)),
     ]
     if not args.skip_ingest:
         steps.insert(0, ("ingest: download/cache match data", lambda: ingest.main([])))
@@ -35,7 +57,7 @@ def main() -> None:
         t0 = time.perf_counter()
         step()
         print(f"--- done in {time.perf_counter() - t0:.1f}s")
-    print(f"\nPipeline complete in {time.perf_counter() - start:.1f}s. Results in results/.")
+    print(f"\nPipeline complete in {time.perf_counter() - start:.1f}s. Results in {team_results_dir(team)}")
 
 
 if __name__ == "__main__":

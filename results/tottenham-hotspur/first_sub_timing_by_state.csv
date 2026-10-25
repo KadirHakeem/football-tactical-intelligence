@@ -1,0 +1,7 @@
+group,score_state,n,median_minute,ci95_low,ci95_high
+Tottenham Hotspur,winning,18,69.3,66.8,73.2
+Tottenham Hotspur,drawing,14,65.1,62.6,70.5
+Tottenham Hotspur,losing,6,55.6,48.9,61.4
+Rest of league,winning,217,66.1,64.4,68.2
+Rest of league,drawing,256,61.5,59.1,63.0
+Rest of league,losing,247,57.8,55.2,59.4

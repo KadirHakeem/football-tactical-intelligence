@@ -1,0 +1,7 @@
+group,score_state,n,median_minute,ci95_low,ci95_high
+Leicester City,winning,19,68.7,62.0,72.5
+Leicester City,drawing,13,61.9,45.0,66.5
+Leicester City,losing,6,45.0,45.0,56.6
+Rest of league,winning,216,66.7,65.2,68.3
+Rest of league,drawing,257,61.8,59.4,63.4
+Rest of league,losing,247,57.8,55.7,59.5

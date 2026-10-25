@@ -8,9 +8,11 @@ Reads the cached events (see fti.ingest) and writes data/processed/substitutions
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
-from fti.ingest import PROJECT_ROOT, load_events, load_matches
+from fti.ingest import CACHE_DIR, EVENTS_DIR, PROJECT_ROOT, load_events, load_matches
 
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
@@ -120,6 +122,24 @@ def build_substitutions_table() -> tuple[pd.DataFrame, list[str]]:
     table = pd.concat(tables, ignore_index=True)
     table["sub_number"] = table.groupby(["match_id", "team"]).cumcount() + 1  # 1st, 2nd, 3rd change
     return table, mismatches
+
+
+def table_is_current(out: Path | None = None, sources: list[Path] | None = None) -> bool:
+    """True if substitutions.csv exists, has the current columns, and is newer than its inputs.
+
+    Inputs = this module's code + the cached match data. If any of them changed after the table
+    was written, the table is stale and must be rebuilt.
+    """
+    out = out or PROCESSED_DIR / "substitutions.csv"
+    if not out.exists():
+        return False
+    with open(out, encoding="utf-8") as f:
+        if not set(COLUMNS) <= set(f.readline().strip().split(",")):
+            return False
+    if sources is None:
+        sources = [Path(__file__), CACHE_DIR / "matches.pkl", *EVENTS_DIR.glob("*.pkl")]
+    newest_input = max((p.stat().st_mtime for p in sources if p.exists()), default=0.0)
+    return out.stat().st_mtime >= newest_input
 
 
 def main() -> None:
